@@ -1,0 +1,12 @@
+<?php if(count($this->profiles)):?>
+<?php echo $this->render('widget/header.phtml');?>
+<div class="bem-widget-profiles bem-lucene_highlight">
+<?php foreach ($this->profiles as $profile): ?>
+<?php echo $this->partial('user/user-list-item.phtml', array('user'=>  AG_UserModel::selectById($profile->getUserId()), 'avatarSize'=>32)) ?>
+<?php endforeach;?>
+<?php $more = $this->total - count($this->profiles); if($more > 0):?>
+    <div class="more_link"><a href="<?php echo $this->link;?>">еще <?php echo $more?>...</a></div>
+<?php endif;?>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

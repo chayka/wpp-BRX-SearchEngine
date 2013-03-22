@@ -1,0 +1,125 @@
+@import '/wp-content/plugins/wpp-ZF-Core/res/css/styles.less?ver=1.3.2';
+
+@width: 750px;
+
+.bem-search_engine-admin{
+    table.control_panel{
+        margin: 2em 0;
+        border: 1px solid gray;
+        .border-radius(3px);
+        .box-sizing;
+        width: @width;
+        tr:first-child{
+            td{
+                font-weight: bold;
+                border-bottom: 1px solid gray;
+            }
+        }
+        tr{
+            td{
+                padding: 0.5ex 0.8ex;
+                border-right: 1px solid gray;
+            }
+            
+            td:last-child{
+                border-right: none;
+            }
+            
+            td.title{
+                
+            }
+            
+            td.switch{
+                
+            }
+            
+            td.total{
+                text-align: center;
+            }
+            
+            td.indexed{
+                text-align: center;
+                
+            }
+            
+            td.actions{
+                span{
+                    margin: 0 0.5em;
+                    cursor: pointer;
+                }
+                
+                span.disabled{
+                    cursor: progress;
+                    color: #eeeeee;
+                }
+
+                span.selected{
+                    cursor: progress;
+                    color: black;
+                    border-bottom: 1px dotted black;
+/*                    background-color: yellow;
+                    .box-shadow(0 0 2px -1px black);*/
+                }
+            }
+        }
+        tr.selected{
+            td{
+                border-top: 1px dashed gray;
+            }
+        }
+    }
+    
+    .processor{
+        width: @width;
+/*        height: 200px;*/
+        border: 1px solid gray;
+        .box-sizing;
+        .border-radius(3px);
+        .progressbar{
+            margin: 2em 2em 1em;
+            height: 30px;
+            border: 1px solid gray;
+            .border-radius(3px);
+            .gradient-vertical(#eeeeee, #eeeeee, #ffffff);
+            .box-sizing;
+            
+            .progresslabel{
+                float: left;
+                width: 100%;
+                margin-top: 5px;
+                font-weight: bold;
+                text-shadow: 1px 1px 0 #fff;            
+                text-align: center;
+            }
+        }
+        
+        .progressspinner{
+            margin: 0 2em 1em;
+            .brx_spinner{
+/*                font-weight: bold;*/
+                font-size: 12px;
+                line-height: 20px;
+                background-size: 16px;
+                padding: 0 0 0 24px;
+                min-height: 20px;
+            }
+        }
+        
+        .boxOutput{
+            margin: 0 2em 2em;
+            height: 100px;
+            overflow-y: scroll; 
+            border: 1px solid gray;
+            .box-sizing;
+            .border-radius(3px);
+/*            padding-top: 1ex;*/
+            .message{
+                padding: 0.5ex;
+                border-bottom: 1px dashed #eeeeee;
+            }
+            .message:last-child{
+                border-bottom: none;
+            }
+        }
+    }
+}

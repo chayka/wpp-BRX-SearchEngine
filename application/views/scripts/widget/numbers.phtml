@@ -1,0 +1,26 @@
+<?php if(count($this->numbers)):?>
+<?php echo $this->render('widget/header.phtml');?>
+<div class="bem-widget-numbers">
+    <table>
+<?php $numberStr = '<tr class="%s"><td class="item">%s</td><td class="value"><span class="badge">%s</span></td></tr>'; ?>
+<?php 
+    foreach ($this->numbers as $number){
+        $link = Util::getItem($number, 'link');
+        $text = Util::getItem($number, 'text');
+        $count= FormatHelper::simplifiedNumber(Util::getItem($number, 'count', 0));
+        $item = $link ? sprintf('<a href="%s">%s</a>', $link, $text) : $text;
+        $subitems = Util::getItem($number, 'subitems');
+        printf($numberStr, 'number', $item, $count);
+        foreach ($subitems as $subitem) {
+            $link = Util::getItem($subitem, 'link');
+            $text = Util::getItem($subitem, 'text');
+            $count= FormatHelper::simplifiedNumber(Util::getItem($subitem, 'count', 0));
+            $item = $link ? sprintf('<a href="%s">%s</a>', $link, $text) : $text;
+            printf($numberStr, 'sub_number', $item, $count);
+        }
+    }
+?>
+    </table>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

@@ -1,0 +1,12 @@
+<?php if(count($this->articles)):?>
+<?php echo $this->render('widget/header.phtml');?>
+<div class="bem-widget-articles bem-lucene_highlight">
+<?php foreach ($this->articles as $article): ?>
+<?php echo $this->partial('widget/post-list-item.phtml', array('post'=> $article, 'jQueryIcon'=>'ui-icon-document')); ?>
+<?php endforeach;?>
+<?php $more = $this->total - count($this->articles); if($more > 0):?>
+    <div class="more_link"><a href="<?php echo $this->link;?>">еще <?php echo $more?>...</a></div>
+<?php endif;?>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

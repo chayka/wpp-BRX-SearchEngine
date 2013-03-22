@@ -1,0 +1,9 @@
+<?php if(count($this->terms)):?>
+<?php echo $this->render('widget/header.phtml');?>
+<div class="bem-widget-tags">
+<?php foreach ($this->terms as $term): ?>
+<?php echo $this->partial('tag/tag-list-item.phtml', array('term'=> $term)); ?>
+<?php endforeach;?>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

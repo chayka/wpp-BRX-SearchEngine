@@ -1,0 +1,23 @@
+<?php
+
+?>
+<div class="bem-search_engine-options" style="display: none;">
+    <div class="form_field field_related_query" attachpoint="fields.relatedQuery">
+        <label>Ключевые слова для похожих материалов:</label>
+        <span class="form_field-input_box"><input name="search_related_query" type="text" value="<?php echo $this->escape($this->relatedQuery); ?>"/></span>
+        <div class="form_field-tips"></div>
+    </div>
+    
+    <div class="form_field field_vip_keywords" attachpoint="fields.vipKeywords">
+        <label>Ключевые слова для привилегированного поиска:</label>
+        <span class="form_field-input_box"><textarea name="search_vip_keywords"><?php echo $this->escape($this->vipKeywords); ?></textarea></span>
+        <div class="form_field-tips"></div>
+    </div>
+    
+    <div class="form_field field_vip_excerpt" attachpoint="fields.vipExcerpt">
+        <label>Текст объявления:</label>
+        <span class="form_field-input_box"><textarea name="search_vip_excerpt"><?php echo $this->escape($this->vipExcerpt); ?></textarea></span>
+        <div class="form_field-tips"></div>
+    </div>
+    
+</div>

@@ -1,0 +1,8 @@
+<div class="bem-widget_post_item">
+    <?php if($this->jQueryIcon):?>
+    <div class="ui-icon <?php echo $this->jQueryIcon;?>"></div>
+    <?php elseif ($this->bootstrapIcon) :?>
+    <i class="<?php echo $this->bootstrapIcon;?>"></i>
+    <?php endif;?>
+    <div class="title"><a href="<?php echo UrlHelper::post($this->post); ?>"><?php echo LuceneHelper::highlight($this->post->getTitle()); ?></a></div>
+</div>

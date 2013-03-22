@@ -1,0 +1,18 @@
+<?php if($this->user): ?>
+<?php echo $this->render('widget/header.phtml');?>
+<div class="bem-widget-profile_menu">
+    <a class="btn" href="<?php echo UrlHelper::profile($this->user, 'edit');?>">Редактировать профиль</a>
+    <?php if($this->user->getId() == get_current_user_id()): ?>
+    <a class="btn" href="/user/change-password">Сменить пароль</a>
+    <script>
+        (function($){
+            $('a[href="/user/change-password"]').click(function(event){
+                event.preventDefault();
+                $(document).trigger('loginForm.changePassword');
+            });
+        }(jQuery))
+    </script>
+    <?php endif;?>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

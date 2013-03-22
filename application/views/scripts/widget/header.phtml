@@ -1,0 +1,4 @@
+<?php $this->declareVars(array('htmlClasses' => ''))?>
+<li class="widget <?php echo $this->htmlClasses;?>">
+<?php global $widgets_shown; $widgets_shown++;?>
+<?php if($this->title):?><h2 class="widgettitle"><?php echo $this->title;?></h2><?php endif;?>

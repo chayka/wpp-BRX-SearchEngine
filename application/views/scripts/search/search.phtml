@@ -1,0 +1,79 @@
+<div widget="se.searchForm" class="bem-search_form" >
+    <form attachpoint="form" action="/search/<?php if($this->scope && $this->scope!='all'){echo $this->scope.'/';}?>">
+        <div class="row_query">
+            <input attachpoint="inputQuery" name="q" value="<?php echo $this->escape($this->term);?>" class="search_query ui-widget"/>
+            <button widget="button">найти</button>
+        </div>
+        <?php 
+            $samples = OptionHelper_SearchEngine::getOption('samples');
+            $samples = explode("\n", $samples);
+            $sample = $samples[array_rand($samples)];
+        ?>
+        <div class="row_sample" <?php if(!$sample):?>style="display: none;"<?php endif;?>>
+            <span class="sample_label">например:</span>
+            <span class="sample_value" attachpoint="sampleView" attachevent="click: sampleClicked"><?php echo $sample;?></span>
+        </div>
+    </form>
+    <?php
+        $scopes = SearchHelper::getScopes();
+        $options = array();
+        foreach ($scopes as $name=>$data){
+            $options[$name]=$data['label'];
+        }
+        
+    ?>
+    <div class="row_search_area" <?php if(count($options)<=1):?>style="display: none;"<?php endif;?> >
+        <label>Искать:</label>
+        <span class="search_area_options" attachpoint="boxScopeOptions">
+            <?php echo $this->formRadio('scope', $this->scope, array(
+            'attachevent'=>'scopeChanged'
+            ), $options);?>
+        </span>
+    </div>
+    
+</div>
+
+<?php
+
+if(count($this->vipPosts)){?>
+<div class="bem-search_results_vip bem-lucene_highlight">
+    <h2>Реклама:</h2>
+<?php    
+    foreach($this->vipPosts as $post){
+        echo $this->partial('search/search-item-vip.phtml', array('post'=>$post));
+    }
+?>
+</div>    
+<?php }
+if(count($this->posts)){?>
+<div class="bem-search_results bem-lucene_highlight">
+<?php
+    $itemNumber = ($this->pagination->getCurrentPage() - 1) * $this->pagination->getItemsPerPage();
+    foreach($this->posts as $post){
+        $itemNumber++;
+        echo $this->partial('search/search-item.phtml', array('post'=>$post, 'itemNumber'=>$itemNumber));
+    }
+
+    echo $this->pagination->render();
+?>
+</div>
+
+<?php
+}else if($this->term){
+?>
+<div class="bem-search_not_found">
+    <h2>Ничего не найдено по запросу <span class="term"><?php echo $this->term?></span> 
+    </h2>
+    <div>
+        Что еще можно сделать:
+        <ul>
+            <li>Попробуйте сформулировать запрос по-другому.</li>
+<!--            <li>Попробуйте поискать в других разделах.</li>-->
+<!--            <li>Попробуйте поискать в <a href="/tags/">рубриках</a>.</li>-->
+        </ul>
+    </div>
+</div>
+<?php
+}
+
+SearchEngine::addJQueryWidgets();

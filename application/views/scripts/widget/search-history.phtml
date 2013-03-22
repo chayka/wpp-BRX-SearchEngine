@@ -1,0 +1,29 @@
+<?php if(count($this->history)):?>
+<?php echo $this->render('widget/header.phtml');?>
+<?php 
+    $show = $this->count;
+    $more = count($this->history) - $show;
+?>
+<div class="bem-widget-search_history" widget="searchHistory" show="<?php echo $show;?>">
+    <ul attachPoint="requestsBox">
+<?php 
+    printf('<li id="request-template" style="display: none;"><span class="ui-icon ui-icon-search"><a href=""></a><span class="request_tools"><span class="ui-icon ui-icon-trash"></span></span></li>');  
+?>
+<?php foreach ($this->history as $i=>$query): ?>
+<?php printf('<li style="display: %s;"><span class="ui-icon ui-icon-search"></span><a href="%s">%s</a><span class="request_tools"><span class="ui-icon ui-icon-trash"></span></span></li>', 
+        $i>=$show?'none':'block',
+        UrlHelper::search($query), 
+        $query);  ?>
+<?php endforeach;?>
+    </ul>
+    <div class="links_box clearfloat">
+        <span attachPoint="moreLink" attachEvent="click: toggleVisibility" class="more_link" <?php if($more <= 0):?>style="display: none;"<?php endif;?>>еще <?php echo $more;?>...</span>
+        <span class="flush_history_link" attachEvent="flushHistory">очистить историю</span>
+    </div>
+    <div class="clearfloat"></div>
+</div>
+<script>
+    window.searchHistory = <?php echo JsonHelper::encode($this->history)?>;
+</script>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif;?>

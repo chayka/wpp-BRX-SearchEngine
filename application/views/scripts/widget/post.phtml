@@ -1,0 +1,9 @@
+<?php if($this->post): ?>
+<?php echo $this->render('widget/header.phtml');?>
+<?php $this->post->populateWpGlobals();?>
+<div class="bem-widget-post ">
+<?php the_content();?>
+</div>
+<?php echo $this->render('widget/footer.phtml');?>
+<?php endif; ?>
+

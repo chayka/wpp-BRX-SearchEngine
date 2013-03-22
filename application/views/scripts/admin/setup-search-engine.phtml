@@ -1,0 +1,61 @@
+<div class="wrap bem-zf_core-admin">
+    <div id="icon-options-general" class="icon32">
+        <br/>
+    </div>
+    <h2>Настройка поисковой системы</h2>
+    <div class="bem-admin_setup_form bem-search_engine-admin_setup_form" widget="brx.setupForm" url="/api/search-engine/update-options" style="display: none;">
+        <div class="form_fields">
+            <div class="form_field field_highlight" attachpoint="fields.highlight">
+                <label>Подсвечивать найденное:</label>
+                <span class="form_field-input_box"><?php echo $this->formSelect('highlight', $this->highlight, 
+                                array(
+                                    'attachpoint' => 'inputs.highlight',
+//                                    'attachevent' => 'change: itemTypeChanged'
+                                ), 
+                                array(
+                                    0 =>'Выкл',
+                                    1 =>'Вкл'
+                                ));?></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_template" attachpoint="fields.template">
+                <label>Шаблон страницы поиска:</label>
+                <span class="form_field-input_box"><input name="template" type="text" value="<?php echo $this->escape($this->template); ?>"/></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_items_per_iteration" attachpoint="fields.items_per_iteration" >
+                <label>Индексировать за раз:</label>
+                <span class="form_field-input_box"><input name="items_per_iteration" type="text" value="<?php echo $this->escape($this->items_per_iteration); ?>"/></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_vip_items_per_page" attachpoint="fields.vip_items_per_page" >
+                <label>Рекламы на странице:</label>
+                <span class="form_field-input_box"><input name="vip_items_per_page" type="text" value="<?php echo $this->escape($this->vip_items_per_page); ?>"/></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_items_per_page" attachpoint="fields.items_per_page">
+                <label>Результатов на странице:</label>
+                <span class="form_field-input_box"><input name="items_per_page" type="text" value="<?php echo $this->escape($this->items_per_page); ?>"/></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_samples" attachpoint="fields.samples">
+                <label>Примеры для поиска:</label>
+                <span class="form_field-input_box"><textarea name="samples" ><?php echo $this->escape($this->samples); ?></textarea></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field field_areas" attachpoint="fields.areas">
+                <label>Области поиска:</label>
+                <span class="form_field-input_box"><textarea name="areas" ><?php echo $this->escape($this->areas); ?></textarea></span>
+                <div class="form_field-tips">
+                </div>
+            </div>
+        </div>
+        <div class="button_pane">
+            <button widget="button" attachevent="saveOptions">Сохранить</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.setupOptions = <?php echo JsonHelper::encode($this->options);?>;
+    </script>
+    <?php IlatCatalogue::addJQueryWidgets();?>
+</div>
