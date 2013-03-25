@@ -42,6 +42,7 @@ class WP_Widget_SearchResults extends WP_Widget {
         
         $sources = preg_split('%\s*,\s*%', Util::getItem($instance, 'sources'));
         $search = '';
+        $numberOfTaxonomies = Util::getItem($instance, 'numberOfTaxonomies');
         
         if(empty($sources)){
             $sources = array(
@@ -61,6 +62,9 @@ class WP_Widget_SearchResults extends WP_Widget {
                     $terms = wp_get_post_terms($post->ID, $source, array("fields" => "names"));
                     if(!is_wp_error($terms) && count($terms)){
 //                        Util:: print_r($terms);
+                        if($numberOfTaxonomies){
+                            $terms = array_slice($terms, 0, $numberOfTaxonomies);
+                        }
                         $search = join(' ', $terms);
 //                        echo $source .' tax detected';
                         break;
@@ -82,15 +86,19 @@ class WP_Widget_SearchResults extends WP_Widget {
             return;
         }
         
+        $searchField = Util::getItem($instance, 'searchField');
+
         $scope = Util::getItem($instance, 'scope', 'all');
         
         $number = Util::getItem($instance, 'number', 5);
 
         $limit = Util::getItem($instance, 'limit', 100);
+
+        $shuffle = Util::getItem($instance, 'shuffle');
         
         SearchHelper::setLimit($limit);
         
-        $posts = SearchHelper::searchPosts($search, $scope, 1, $number+1);
+        $posts = SearchHelper::searchPosts($search, $scope, 1, $number+1, $searchField?$searchField:null, $shuffle);
         
         if(empty($posts)){
             return;
@@ -131,10 +139,13 @@ class WP_Widget_SearchResults extends WP_Widget {
         $instance = $old_instance;
         $instance['title'] = strip_tags(Util::getItem($new_instance, 'title'));
         $instance['showForPostTypes'] = strip_tags(Util::getItem($new_instance, 'showForPostTypes'));
+        $instance['numberOfTaxonomies'] = (int)strip_tags(Util::getItem($new_instance, 'numberOfTaxonomies'));
+        $instance['searchField'] = strip_tags(Util::getItem($new_instance, 'searchField'));
         $instance['scope'] = strip_tags(Util::getItem($new_instance, 'scope'));
         $instance['sources'] = strip_tags(Util::getItem($new_instance, 'sources'));
         $instance['number'] = (int)strip_tags(Util::getItem($new_instance, 'number'));
         $instance['limit'] = (int)strip_tags(Util::getItem($new_instance, 'limit'));
+        $instance['shuffle'] = strip_tags(Util::getItem($new_instance, 'shuffle'));
 //        $this->flush();
 
         $alloptions = wp_cache_get('alloptions', 'options');
@@ -149,15 +160,24 @@ class WP_Widget_SearchResults extends WP_Widget {
         $title = esc_attr(Util::getItem($instance, 'title', 'Похожие материалы'));
         $sources = esc_attr(Util::getItem($instance, 'sources', 'related_query, post_tag, title, category'));
         $showForPostTypes = esc_attr(Util::getItem($instance, 'showForPostTypes', ''));
+        $searchField = esc_attr(Util::getItem($instance, 'searchField', 'title'));
         $scope = esc_attr(Util::getItem($instance, 'scope', 'all'));
         $number = esc_attr(Util::getItem($instance, 'number', 5));
+        $numberOfTaxonomies = esc_attr(Util::getItem($instance, 'numberOfTaxonomies', 2));
         $limit = esc_attr(Util::getItem($instance, 'limit', 100));
+        $shuffle = esc_attr(Util::getItem($instance, 'shuffle', ''));
         ?>
             <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
 
             <p><label for="<?php echo $this->get_field_id('sources'); ?>"><?php _e('Источник запроса:'); ?></label>
             <input id="<?php echo $this->get_field_id('sources'); ?>" name="<?php echo $this->get_field_name('sources'); ?>" type="text" value="<?php echo $sources; ?>" /></p>
+
+            <p><label for="<?php echo $this->get_field_id('numberOfTaxonomies'); ?>"><?php _e('Количество таксономий:'); ?></label>
+            <input id="<?php echo $this->get_field_id('numberOfTaxonomies'); ?>" name="<?php echo $this->get_field_name('numberOfTaxonomies'); ?>" type="text" value="<?php echo $numberOfTaxonomies; ?>" /></p>
+
+            <p><label for="<?php echo $this->get_field_id('searchField'); ?>"><?php _e('Поле для поиска:'); ?></label>
+            <input id="<?php echo $this->get_field_id('searchField'); ?>" name="<?php echo $this->get_field_name('searchField'); ?>" type="text" value="<?php echo $searchField; ?>" /></p>
 
             <p><label for="<?php echo $this->get_field_id('scope'); ?>"><?php _e('Область поиска:'); ?></label>
             <input id="<?php echo $this->get_field_id('scope'); ?>" name="<?php echo $this->get_field_name('scope'); ?>" type="text" value="<?php echo $scope; ?>" /></p>
@@ -170,6 +190,9 @@ class WP_Widget_SearchResults extends WP_Widget {
 
             <p><label for="<?php echo $this->get_field_id('limit'); ?>"><?php _e('Точность поиска:'); ?></label>
             <input id="<?php echo $this->get_field_id('limit'); ?>" name="<?php echo $this->get_field_name('limit'); ?>" type="text" value="<?php echo $limit; ?>" /></p>
+
+            <p><label for="<?php echo $this->get_field_id('shuffle'); ?>"><?php _e('Перемешать результаты'); ?></label>
+            <input id="<?php echo $this->get_field_id('shuffle'); ?>" name="<?php echo $this->get_field_name('shuffle'); ?>" type="checkbox" value="1" <?php if($shuffle): ?>checked="checked"<?php endif;?>/></p>
 
         <?php
     }

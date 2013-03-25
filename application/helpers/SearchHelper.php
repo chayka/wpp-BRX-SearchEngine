@@ -146,7 +146,11 @@ class SearchHelper {
         Zend_Search_Lucene::setResultSetLimit($limit);
     }
     
-    public static function searchPosts($term, $scope, $page = 1, $itemsPerPage = 5, $vipSearch = false){
+    public static function setDefaultSearchField($field = null){
+        LuceneHelper::getInstance()->setDefaultSearchField($field);
+    }
+    
+    public static function searchPosts($term, $scope, $page = 1, $itemsPerPage = 5, $searchField = null, $shuffle = false){
         $postTypes = self::resolvePostTypes($scope);
         if($postTypes){
             if(!is_array($postTypes)){
@@ -166,18 +170,20 @@ class SearchHelper {
         $strQuery = sprintf('(%s) AND (%s)', 
                 join(' OR ', $ptQuery), $term
             );
-        if($vipSearch){
+        if('vip_keywords' == $searchField){
             $strQuery .= ' AND (vip_search_status: VS_YES)';
         }
 //        echo $strQuery;
-        LuceneHelper::getInstance()->setDefaultSearchField($vipSearch?'vip_keywords':null);
+        self::setDefaultSearchField($searchField);
         $lquery = LuceneHelper::parseQuery($strQuery);
 //        Util::print_r(array_values(LuceneHelper::getInstance()->getFieldNames()));
 //        Util::print_r($lquery);
-        if(!$vipSearch){
-            LuceneHelper::setQuery($lquery);
-        }
+        LuceneHelper::setQuery(
+            LuceneHelper::parseQuery($term)
+//                    $lquery                        
+        );
         $hits = LuceneHelper::searchHits($lquery);
+        self::setDefaultSearchField(null);
         if(empty($hits)){
             return array();
         }
@@ -190,7 +196,7 @@ class SearchHelper {
 
             self::$totalFound = count($ids);
     //        printf('[Q: %s, S: %s, f: %d] ', $term, $scope, self::$totalFound);
-            if($vipSearch){
+            if($shuffle){
                 shuffle($ids);
             }
             $ids = array_slice($ids, ($page - 1)*$itemsPerPage, $itemsPerPage);

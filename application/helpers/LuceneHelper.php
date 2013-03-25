@@ -24,6 +24,13 @@ class LuceneHelper {
      */
     public static function getInstance() {
         if (empty(self::$instance)) {
+/**
+ * How to fix highlight in utf-8 text:
+ * /Zend/Search/Lucene/Analysis/Analyzer/Common/Utf8.php
+ * function 'reset'
+ * fix the if close on encoding check or add 
+ * if(!$this->_encoding){$this->encoding = 'UTF-8';}
+ */
 //            echo "getInstance()";
 //            $indexFnDir = PathHelper::getLuceneDir($_SERVER['SERVER_NAME']);
             $indexFnDir = WPP_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName();
@@ -33,6 +40,7 @@ class LuceneHelper {
                 //изначально Zend Lucene не настроена на работу с UTF-8
                 //поэтому надо изменить используемый по умолчанию анализатор
                 //в данном случае используется анализатор для UTF-8 нечувствительный к регистру
+                Zend_Search_Lucene_Search_QueryParser::setDefaultEncoding('utf-8');
                 $analyzer = new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_CaseInsensitive();
 //                $analyzer = new MorphyAnalyzer();
                 //инициализируем фильтр стоп-слов
@@ -234,6 +242,7 @@ class LuceneHelper {
     }
 
     public static function highlight($html, $query = '') {
+        self::getInstance();
         self::setQuery($query);
 
         if (self::$query) {
@@ -262,11 +271,11 @@ class MorphyAnalyzer extends Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_Ca
      */
     private $_bytePosition;
 
-    public function __construct() {
-        parent::__construct();
-
-        $this->addFilter(new MorphyFilter());
-    }
+//    public function __construct() {
+//        parent::__construct();
+//
+//        $this->addFilter(new MorphyFilter());
+//    }
 
     /**
      * Reset token stream
@@ -278,7 +287,7 @@ class MorphyAnalyzer extends Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_Ca
         // convert input into UTF-8
         if (strcasecmp($this->_encoding, 'utf8') != 0 &&
                 strcasecmp($this->_encoding, 'utf-8') != 0) {
-            $this->_input = iconv($this->_encoding, 'UTF-8', $this->_input);
+//            $this->_input = iconv($this->_encoding, 'UTF-8', $this->_input);
             $this->_encoding = 'UTF-8';
         }
     }
@@ -290,38 +299,38 @@ class MorphyAnalyzer extends Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8_Ca
      *
      * @return Zend_Search_Lucene_Analysis_Token|null
      */
-    public function nextToken() {
-        if ($this->_input === null) {
-            return null;
-        }
-
-        do {
-            if (!preg_match('/[А-Я]+/u', $this->_input, $match, PREG_OFFSET_CAPTURE, $this->_bytePosition)) {
-                // It covers both cases a) there are no matches (preg_match(...) === 0)
-                // b) error occured (preg_match(...) === FALSE)
-                return null;
-            }
-
-            // matched string
-            $matchedWord = $match[0][0];
-
-            // binary position of the matched word in the input stream
-            $binStartPos = $match[0][1];
-
-            // character position of the matched word in the input stream
-            $startPos = $this->_position +
-                    iconv_strlen(substr($this->_input, $this->_bytePosition, $binStartPos - $this->_bytePosition), 'UTF-8');
-            // character postion of the end of matched word in the input stream
-            $endPos = $startPos + iconv_strlen($matchedWord, 'UTF-8');
-
-            $this->_bytePosition = $binStartPos + strlen($matchedWord);
-            $this->_position = $endPos;
-
-            $token = $this->normalize(new Zend_Search_Lucene_Analysis_Token($matchedWord, $startPos, $endPos));
-        } while ($token === null); // try again if token is skipped
-
-        return $token;
-    }
+//    public function nextToken() {
+//        if ($this->_input === null) {
+//            return null;
+//        }
+//
+//        do {
+//            if (!preg_match('/[А-Я]+/u', $this->_input, $match, PREG_OFFSET_CAPTURE, $this->_bytePosition)) {
+//                // It covers both cases a) there are no matches (preg_match(...) === 0)
+//                // b) error occured (preg_match(...) === FALSE)
+//                return null;
+//            }
+//
+//            // matched string
+//            $matchedWord = $match[0][0];
+//
+//            // binary position of the matched word in the input stream
+//            $binStartPos = $match[0][1];
+//
+//            // character position of the matched word in the input stream
+//            $startPos = $this->_position +
+//                    iconv_strlen(substr($this->_input, $this->_bytePosition, $binStartPos - $this->_bytePosition), 'UTF-8');
+//            // character postion of the end of matched word in the input stream
+//            $endPos = $startPos + iconv_strlen($matchedWord, 'UTF-8');
+//
+//            $this->_bytePosition = $binStartPos + strlen($matchedWord);
+//            $this->_position = $endPos;
+//
+//            $token = $this->normalize(new Zend_Search_Lucene_Analysis_Token($matchedWord, $startPos, $endPos));
+//        } while ($token === null); // try again if token is skipped
+//
+//        return $token;
+//    }
 
 }
 
@@ -365,6 +374,7 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
 
     public function normalize(Zend_Search_Lucene_Analysis_Token $srcToken) {
         $str = trim(mb_strtoupper($srcToken->getTermText(), "utf-8"));
+//        echo "[$str]";
         if (!preg_match('%^[А-Я]+$%u', $str)) {
 //            echo "несклоняемо: [$str]\r";
             return $srcToken;
@@ -477,7 +487,7 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
         );
 
         $newToken->setPositionIncrement($srcToken->getPositionIncrement());
-
+//echo "($form)";
         return $newToken;
     }
 

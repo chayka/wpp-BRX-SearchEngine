@@ -60,10 +60,10 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
             $vipsPerPage = OptionHelper_SearchEngine::getOption('vip_items_per_page', 3);
             
             $vipPosts = $vipsPerPage?
-                SearchHelper::searchPosts($term, $scope, $page, $vipsPerPage, true):
+                SearchHelper::searchPosts($term, $scope, $page, $vipsPerPage, 'vip_keywords', true):
                 array();
 
-            $posts = SearchHelper::searchPosts($term, $scope, $page, $itemsPerPage, false);
+            $posts = SearchHelper::searchPosts($term, $scope, $page, $itemsPerPage, null);
 
             $this->setupNavigation($term, $scope, $page, $itemsPerPage, SearchHelper::getTotalFound());
             foreach ($posts as $post) {
