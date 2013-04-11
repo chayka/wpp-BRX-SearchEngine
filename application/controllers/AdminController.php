@@ -23,7 +23,8 @@ class SearchEngine_AdminController  extends Zend_Controller_Action{
         $this->view->postTypeInfo = SearchHelper::getPostTypeInfo();
         wp_enqueue_style('se-control-panel');
         wp_enqueue_script('se-control-panel');
-        wp_enqueue_style('jquery-ui-smoothness');
+//        wp_enqueue_style('jquery-ui-smoothness');
+        wp_enqueue_style('jquery-ui');
     }
 
     public function setupSearchEngineAction(){

@@ -173,6 +173,22 @@ class SearchHelper {
         if('vip_keywords' == $searchField){
             $strQuery .= ' AND (vip_search_status: VS_YES)';
         }
+//(
+//    (post_type: page) 
+//    OR (post_type: service-item) 
+//    OR (post_type: post) 
+//    OR (post_type: catalog-item)
+//) 
+//AND (молодечно) 
+//AND (vip_search_status: VS_YES)
+//
+//(
+//    (post_type: page) 
+//    OR (post_type: service-item) 
+//    OR (post_type: post) 
+//    OR (post_type: catalog-item)
+//) 
+//AND (молодечно)
 //        echo $strQuery;
         self::setDefaultSearchField($searchField);
         $lquery = LuceneHelper::parseQuery($strQuery);
@@ -183,6 +199,7 @@ class SearchHelper {
 //                    $lquery                        
         );
         $hits = LuceneHelper::searchHits($lquery);
+//        Util::print_r($hits);
         self::setDefaultSearchField(null);
         if(empty($hits)){
             return array();
@@ -195,7 +212,7 @@ class SearchHelper {
             }
 
             self::$totalFound = count($ids);
-    //        printf('[Q: %s, S: %s, f: %d] ', $term, $scope, self::$totalFound);
+//            printf('[Q: %s, S: %s, f: %d] ', $term, $scope, self::$totalFound);
             if($shuffle){
                 shuffle($ids);
             }
@@ -260,7 +277,7 @@ class SearchHelper {
         $item[LuceneHelper::getIdField()] = array('keyword', 'pk_'.$post->getId());
         $item['post_type'] = array('keyword', $post->getType());
         $item['title'] = array('unstored', $post->getTitle(), 2);
-        $item['content'] = array('unstored', wp_strip_all_tags($post->getContent()), 0.5);
+        $item['content'] = array('unstored', wp_strip_all_tags($post->getContent()));
         $item['user_id'] = array('keyword', 'user_'.$post->getUserId());
         $taxonomies = get_taxonomies();
         foreach ($taxonomies as $taxonomy){

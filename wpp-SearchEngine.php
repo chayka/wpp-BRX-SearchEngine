@@ -26,9 +26,6 @@ ZF_Query::registerApplication('SEARCH_ENGINE', WPP_SEARCH_ENGINE_PATH.'applicati
 class SearchEngine {
     const NLS_DOMAIN = "SearchEngine";
     
-    protected static $fieldRules;
-    protected static $itemTypeIds;
-
     public static function baseUrl(){
         echo WPP_SEARCH_ENGINE_URL;
     }
@@ -278,8 +275,3 @@ class SearchEngine {
 
 add_action('init', array('SearchEngine', 'installPlugin'));
 register_uninstall_hook(__FILE__, array('SearchEngine', 'uninstallPlugin'));
-    
-//register_sidebar(array(
-//    'id'=>'index-index',
-//    'name'=>__('Главная страница'),
-//));

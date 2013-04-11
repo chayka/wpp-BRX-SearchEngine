@@ -176,6 +176,7 @@ class LuceneHelper {
     }
 
     public static function indexLuceneDoc($doc) {
+        Log::dir($doc, 'indexing doc');
         $index = self::getInstance();
         $id = $doc->getFieldValue(self::$idField);
         try {
@@ -377,7 +378,13 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
 //        echo "[$str]";
         if (!preg_match('%^[А-Я]+$%u', $str)) {
 //            echo "несклоняемо: [$str]\r";
-            return $srcToken;
+            $newToken = new Zend_Search_Lucene_Analysis_Token(
+                            $str,
+                            $srcToken->getStartOffset(),
+                            $srcToken->getEndOffset()
+            );
+            Log::dir($newToken, "$str - несклоняемо");
+            return $newToken;
         }
 //        //извлекаем корень слова
 //        $pseudo_root = $this->morphy->getPseudoRoot($str);
@@ -476,18 +483,20 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
 //            }
 //        }
         //если лексема короче 3 символов, то не используем её      
-        if (/* mb_strlen($newStr, "utf-8") < 3 */!$form || $omit) {
+        if (/* mb_strlen($newStr, "utf-8") < 3 */$omit) {
+            Log::dir(array('form'=>$form, 'omit'=>$omit), "$str - omitting");
             return null;
         }
 
         $newToken = new Zend_Search_Lucene_Analysis_Token(
-                        $form,
+                        $form?$form:$str,
                         $srcToken->getStartOffset(),
                         $srcToken->getEndOffset()
         );
 
         $newToken->setPositionIncrement($srcToken->getPositionIncrement());
 //echo "($form)";
+        Log::dir($newToken, "$str - success");
         return $newToken;
     }
 
