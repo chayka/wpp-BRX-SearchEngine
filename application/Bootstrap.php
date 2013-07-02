@@ -1,8 +1,8 @@
 <?php
 
-class SearchEngine_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
+class wpp_BRX_SearchEngine_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-    const MODULE = 'SearchEngine';
+    const MODULE = 'wpp_BRX_SearchEngine';
     
     public function run(){
         $this->setupRouting();

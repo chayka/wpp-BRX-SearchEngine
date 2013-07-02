@@ -10,7 +10,7 @@ require_once 'LuceneHelper.php';
 class SearchHelper {
     
     const META_FIELD_INDEXED = 'last_indexed';
-    const SITE_OPTION_SEARCH_ENABLED = 'SearchEngine.SearchEnabled';
+    const SITE_OPTION_SEARCH_ENABLED = 'wpp_BRX_SearchEngine.SearchEnabled';
     
     protected static $totalFound;
     protected static $results;
@@ -93,7 +93,7 @@ class SearchHelper {
     
     public static function getScopes(){
         if(!self::$scopes){
-            $raw = OptionHelper_SearchEngine::getOption('areas');
+            $raw = OptionHelper_wpp_BRX_SearchEngine::getOption('areas');
             $rawStrings = preg_split('%\r?\n%', $raw);
             foreach ($rawStrings as $string) {
 //                echo "($string) ";
@@ -207,8 +207,11 @@ class SearchHelper {
         $posts = array();
         if(count($hits)){
             $ids = array();
+            $scores = array();
             foreach($hits as $hit){
-                $ids[]=$hit->getDocument()->getFieldValue(LuceneHelper::getIdField());
+                $id = substr($hit->getDocument()->getFieldValue(LuceneHelper::getIdField()), 3);
+                $ids[]=$id;
+                $scores[$id]=$hit->score; 
             }
 
             self::$totalFound = count($ids);
@@ -217,9 +220,9 @@ class SearchHelper {
                 shuffle($ids);
             }
             $ids = array_slice($ids, ($page - 1)*$itemsPerPage, $itemsPerPage);
-            foreach($ids as $i=>$id){
-                $ids[$i] = substr($id, 3);
-            }
+//            foreach($ids as $i=>$id){
+//                $ids[$i] = substr($id, 3);
+//            }
             $query = array(
                 'post_type'=>$postTypes, 
                 'post__in'=>$ids,
@@ -237,6 +240,7 @@ class SearchHelper {
             $tmp = array();
             foreach($ids as $id){
                 $tmp[$id] = $posts[$id];
+                $tmp[$id]->getWpPost()->score = $scores[$id];
             }
             $posts = $tmp;
         }
@@ -250,7 +254,7 @@ class SearchHelper {
     }
     
     public static function highlight($html, $query=''){
-        return OptionHelper_SearchEngine::getOption('highlight')?
+        return OptionHelper_wpp_BRX_SearchEngine::getOption('highlight')?
                 LuceneHelper::highlight($html, $query):
                 $html;
     }
@@ -267,7 +271,7 @@ class SearchHelper {
         return LuceneHelper::getInstance()->numDocs();
     }
     
-    public static function indexPost($post){
+    public static function luceneReadyPost($post){
         if(!$post){
             return null;
         }
@@ -302,6 +306,20 @@ class SearchHelper {
 //            $item['vip_search_status'] = array('keyword', 'VS_NO');
         }
 //        Log::dir($item, 'before indexing');
+        return $item;
+    }
+
+
+    public static function indexPost($post){
+        if(!$post){
+            return null;
+        }
+        if(!($post instanceof PostModel)){
+            $post = PostModel::unpackDbRecord($post);
+        }
+        
+        $item = self::luceneReadyPost($post);
+        
         $doc = LuceneHelper::luceneDocFromArray($item);
         LuceneHelper::indexLuceneDoc($doc);
 //        update_post_meta($post->getId(), self::META_FIELD_INDEXED, DateHelper::datetimeToDbStr($post->getDtModified()));

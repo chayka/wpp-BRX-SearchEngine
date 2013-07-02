@@ -6,7 +6,7 @@
  *
  * @author borismossounov
  */
-class SearchEngine_SearchController extends Zend_Controller_Action{
+class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
     //put your code here
     
     public function init(){
@@ -41,11 +41,12 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
 //        $mode = InputHelper::getParam('mode', 'votes');
         $scope = InputHelper::getParam('scope', 'all');
         $page = InputHelper::getParam('page', 1);
+        $debug = InputHelper::getParam('debug', 0);
         $posts = array();
         $terms = array();
         if($term){
             
-            $itemsPerPage = OptionHelper_SearchEngine::getOption('items_per_page', 10);
+            $itemsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10);
             $_SESSION['search_scope'] = $scope;
             $title = 'Результаты поиска';
             if('all' != $scope){
@@ -57,7 +58,7 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
             }
             WpHelper::setPostTitle($title);
             
-            $vipsPerPage = OptionHelper_SearchEngine::getOption('vip_items_per_page', 3);
+            $vipsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 3);
             
             $vipPosts = $vipsPerPage?
                 SearchHelper::searchPosts($term, $scope, $page, $vipsPerPage, 'vip_keywords', true):
@@ -65,7 +66,7 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
 
             $posts = SearchHelper::searchPosts($term, $scope, $page, $itemsPerPage, null);
 
-            $this->setupNavigation($term, $scope, $page, $itemsPerPage, SearchHelper::getTotalFound());
+            $this->setupNavigation($term, $scope, $page, $itemsPerPage, SearchHelper::getTotalFound(), $debug);
             foreach ($posts as $post) {
                 $post->loadTerms();
             }
@@ -89,12 +90,15 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
         $this->view->scope = $scope;
         $this->view->term = $term;
         $this->view->terms = $terms;
+        $this->view->debug = $debug;
         
         wp_enqueue_style('se-search-page');
         wp_enqueue_style('pagination');
         wp_enqueue_script('se-search-form');
-        
-        $template = OptionHelper_SearchEngine::getOption('template');
+        if($debug){
+            wp_enqueue_style('se-search-debug');
+        }
+        $template = OptionHelper_wpp_BRX_SearchEngine::getOption('template');
         if($template){
             WpHelper::setPageTemplate($template);
         }
@@ -112,14 +116,14 @@ class SearchEngine_SearchController extends Zend_Controller_Action{
     }
    
     
-    protected function setupNavigation($term, $scope, $page, $itemsPerPage, $total){
+    protected function setupNavigation($term, $scope, $page, $itemsPerPage, $total, $debug = false){
         $pagination = new PaginationModel();
         $pagination->setCurrentPage($page);
         $pagination->setPackSize(10);
         $pagination->setTotalPages(ceil($total / $itemsPerPage));
         $pagination->setItemsPerPage($itemsPerPage);
 //        $router = Util::getFront()->getRouter();
-        $pageLinkPattern = UrlHelper_SearchEngine::search($term, $scope, '.page.');//$router->assemble(array('mode'=>$mode, 'page'=>'.page.', 'taxonomy'=>$taxonomy, 'scope'=>$scope), 'tag');
+        $pageLinkPattern = UrlHelper_wpp_BRX_SearchEngine::search($term, $scope, '.page.', $debug);//$router->assemble(array('mode'=>$mode, 'page'=>'.page.', 'taxonomy'=>$taxonomy, 'scope'=>$scope), 'tag');
         $pagination->setPageLinkPattern($pageLinkPattern);
         $this->view->pagination = $pagination;
     }

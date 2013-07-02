@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Zend/Search/Lucene.php';
-require_once WPP_SEARCH_ENGINE_PATH.'library/phpmorphy-0.3.7/src/common.php';
+require_once WPP_BRX_SEARCH_ENGINE_PATH.'library/phpmorphy-0.3.7/src/common.php';
 interface LuceneReadyInterface {
 
     public function packLuceneDoc();
@@ -33,7 +33,7 @@ class LuceneHelper {
  */
 //            echo "getInstance()";
 //            $indexFnDir = PathHelper::getLuceneDir($_SERVER['SERVER_NAME']);
-            $indexFnDir = WPP_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName();
+            $indexFnDir = WPP_BRX_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName();
 
 //            die($indexFnDir);
             try {
@@ -45,7 +45,7 @@ class LuceneHelper {
 //                $analyzer = new MorphyAnalyzer();
                 //инициализируем фильтр стоп-слов
 //                $stopWordsFilter = new Zend_Search_Lucene_Analysis_TokenFilter_StopWords();
-//                $stopWordsFilter->loadFromFile(WPP_SEARCH_ENGINE_PATH.'data/lucene/stop-words.txt');
+//                $stopWordsFilter->loadFromFile(WPP_BRX_SEARCH_ENGINE_PATH.'data/lucene/stop-words.txt');
 //                $analyzer->addFilter($stopWordsFilter);
                 //инициализируем морфологический фильтр
                 $analyzer->addFilter(new MorphyFilter());
@@ -64,7 +64,7 @@ class LuceneHelper {
     }
     
     public static function flush(){
-        return FileSystem::delete(WPP_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName());
+        return FileSystem::delete(WPP_BRX_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName());
     }
 
     public static function setIdField($value) {
@@ -341,7 +341,7 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
 
     public function __construct() {
         //инициализируем объект phpMorphy
-        $dir = WPP_SEARCH_ENGINE_PATH . 'library/phpmorphy-0.3.7/dicts';
+        $dir = WPP_BRX_SEARCH_ENGINE_PATH . 'library/phpmorphy-0.3.7/dicts';
         $lang = 'ru_RU';
 
         $this->morphy = new phpMorphy($dir, $lang);
@@ -373,7 +373,146 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
         return null;
     }
 
+    public function normalizeWord($word){
+        $str = trim(mb_strtoupper($word, "utf-8"));
+        if (!preg_match('%^[А-Я]+$%u', $str)) {
+//            Log::dir($newToken, "$str - несклоняемо");
+            return $str;
+        }
+//        //извлекаем корень слова
+//        $pseudo_root = $this->morphy->getPseudoRoot($str);
+//        if ($pseudo_root === false){
+//            $newStr = $str;
+//        //если корень извлечь не удалось, тогда используем все слово целиком
+//        }else{
+//            $newStr = $pseudo_root[0];
+//        }
+        $omit = false;
+
+
+        $gramInfo = $this->morphy->getGramInfoMergeForms($str);
+//            print_r($gramInfo);
+        $part = $this->morphy->getPartOfSpeech($str);
+        $form = $str;
+        $part = is_array($part) && count($part) ? $part[0] : '';
+        switch ($part) {
+            case 'С':
+            case 'МС':
+                $form = $this->castVariants($str, $part, array(
+                    array('ИМ', 'ЕД'),
+                    array('ИМ', 'МН')
+                        ));
+                break;
+            case 'П':
+            case 'МС-П':
+            case 'ЧИСЛ-П':
+                $form = $this->castVariants($str, $part, array(
+                    array('ИМ', 'ЕД', 'МР'),
+                        ));
+                break;
+            case 'ПРИЧАСТИЕ':
+                $form = $this->castVariants($str, $part, array(
+                    array('ИМ', 'ЕД', 'МР'),
+                        ));
+                break;
+            case 'Г':
+            case 'ДЕЕПРИЧАСТИЕ':
+            case 'ВВОДН':
+//                    $form = $this->morphy->castFormByGramInfo($str, $part, array('1Л', 'ЕД', 'НСТ'), true); 
+                $form = $this->castVariants($str, 'ИНФИНИТИВ', array(
+                    array('ДСТ', 'СВ', 'НП'),
+                    array('ДСТ', 'СВ', 'ПЕ'),
+                    array('ДСТ', 'НС', 'НП'),
+                    array('ДСТ', 'НС', 'ПЕ'),
+                    array('СТР', 'СВ', 'НП'),
+                    array('СТР', 'СВ', 'ПЕ'),
+                    array('СТР', 'НС', 'НП'),
+                    array('СТР', 'НС', 'ПЕ'),
+                        ));
+                break;
+            case 'КР_ПРИЛ':
+            case 'КР_ПРИЧАСТИЕ':
+                $form = $this->castVariants($str, $part, array(
+                    array('ЕД', 'СР'),
+                    array('МН'),
+                        ));
+                break;
+            case 'СОЮЗ':
+            case 'ПРЕДЛ':
+            case 'МЕЖД':
+            case 'ЧАСТ':
+                $omit = true;
+                $form = '---------';
+                break;
+            case 'ИНФИНИТИВ':
+            case 'Н':
+            case 'ПРЕДК':
+            case 'МС-ПРЕДК':
+            case 'ЧИСЛ':
+            case 'ФРАЗ':
+                break;
+            default:
+        }
+//        printf("%s: %s [%s]\n", $srcToken->getTermText(), $form, $pseudo_root[0]);
+//        $resolved = array(
+//            'С', 'П', 'ПРИЧАСТИЕ', 'Г', 'Н', 'ПРЕДЛ', 
+//            'СОЮЗ', 'ИНФИНИТИВ', 'ПРЕДК', 'КР_ПРИЛ', 'ДЕЕПРИЧАСТИЕ', 
+//            'МЕЖД', 'КР_ПРИЧАСТИЕ', 'МС-П', 'ВВОДН', 'ЧАСТ'
+//            
+//            );
+//        if(!in_array($part, $resolved)){
+//            foreach($gramInfo as $i){
+//                printf("    %s (%s): %d\n", $i['pos'], join(', ', $i['grammems']), $i['form_no']);
+//            }
+//            $fa = $this->morphy-> getAllFormsWithAncodes($str);            
+//            foreach($fa as $x => $f1){
+//                $forms = $f1['forms'];
+//                $common = $f1['common'];
+//                $ancodes = $f1['all'];
+//                foreach($forms as $i=>$f){
+//                    printf("    %d) %s (%s : %s)\n", $x, $f, $ancodes[$i], $common);
+//
+//                }
+//            }
+//        }
+        //если лексема короче 3 символов, то не используем её      
+        if (/* mb_strlen($newStr, "utf-8") < 3 */$omit) {
+            Log::dir(array('form'=>$form, 'omit'=>$omit), "$str - omitting");
+            return null;
+        }
+
+//        $newToken = new Zend_Search_Lucene_Analysis_Token(
+//                        $form?$form:$str,
+//                        $srcToken->getStartOffset(),
+//                        $srcToken->getEndOffset()
+//        );
+//
+//        $newToken->setPositionIncrement($srcToken->getPositionIncrement());
+//        Log::dir($newToken, "$str - success");
+        return $form?$form:$str;
+        
+    }
+    
     public function normalize(Zend_Search_Lucene_Analysis_Token $srcToken) {
+        $word = $srcToken->getTermText();
+        $word = $this->normalizeWord($word);
+        if(!$word){
+            return null;
+        }
+        
+        $newToken = new Zend_Search_Lucene_Analysis_Token(
+                        $word,
+                        $srcToken->getStartOffset(),
+                        $srcToken->getEndOffset()
+        );
+
+        $newToken->setPositionIncrement($srcToken->getPositionIncrement());
+        
+        return $newToken;
+    }
+
+    public function normalizeOld(Zend_Search_Lucene_Analysis_Token $srcToken) {
+    
         $str = trim(mb_strtoupper($srcToken->getTermText(), "utf-8"));
 //        echo "[$str]";
         if (!preg_match('%^[А-Я]+$%u', $str)) {

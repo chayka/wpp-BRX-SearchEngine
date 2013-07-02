@@ -5,7 +5,7 @@
             <button widget="button">найти</button>
         </div>
         <?php 
-            $samples = OptionHelper_SearchEngine::getOption('samples');
+            $samples = OptionHelper_wpp_BRX_SearchEngine::getOption('samples');
             $samples = explode("\n", $samples);
             $sample = $samples[array_rand($samples)];
         ?>
@@ -40,7 +40,7 @@ if(count($this->vipPosts)){?>
     <h2>Реклама:</h2>
 <?php    
     foreach($this->vipPosts as $post){
-        echo $this->partial('search/search-item-vip.phtml', array('post'=>$post));
+        echo $this->partial('search/search-item-vip.phtml', array('post'=>$post, 'debug'=>$this->debug));
     }
 ?>
 </div>    
@@ -51,7 +51,7 @@ if(count($this->posts)){?>
     $itemNumber = ($this->pagination->getCurrentPage() - 1) * $this->pagination->getItemsPerPage();
     foreach($this->posts as $post){
         $itemNumber++;
-        echo $this->partial('search/search-item.phtml', array('post'=>$post, 'itemNumber'=>$itemNumber));
+        echo $this->partial('search/search-item.phtml', array('post'=>$post, 'itemNumber'=>$itemNumber, 'debug'=>$this->debug));
     }
 
     echo $this->pagination->render();
@@ -76,4 +76,4 @@ if(count($this->posts)){?>
 <?php
 }
 
-SearchEngine::addJQueryWidgets();
+ZF_Core::addJQueryWidgets();

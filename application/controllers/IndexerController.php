@@ -1,6 +1,6 @@
 <?php
 
-class SearchEngine_IndexerController extends Zend_Controller_Action
+class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
 {
 
     public function init()
@@ -58,12 +58,12 @@ class SearchEngine_IndexerController extends Zend_Controller_Action
         $postId = InputHelper::getParam('postId', 0);
         $number = InputHelper::getParam('number', 10);
         $postTypes = InputHelper::getParam('postType', '');
-        $start = Util::getItem($_SESSION, 'SearchEngine.indexStarted');
+        $start = Util::getItem($_SESSION, 'wpp_BRX_SearchEngine.indexStarted');
         $update = InputHelper::getParam('update');
         $payload = array();
         if(!$start){
             $now = new Zend_Date();
-            $start = $_SESSION['SearchEngine.indexStarted'] = DateHelper::datetimeToDbStr($now);
+            $start = $_SESSION['wpp_BRX_SearchEngine.indexStarted'] = DateHelper::datetimeToDbStr($now);
             $payload['start'] = DateHelper::datetimeToJsonStr($now); 
 //            session_commit();
 //            session_write_close();
@@ -130,7 +130,7 @@ class SearchEngine_IndexerController extends Zend_Controller_Action
             SearchHelper::optimize();
             $payload['posts_indexed']['total'] = SearchHelper::postsInIndex();
             if(!$payload['posts_left']){
-                unset($_SESSION['SearchEngine.indexStarted']);
+                unset($_SESSION['wpp_BRX_SearchEngine.indexStarted']);
                 $payload['stop'] = DateHelper::datetimeToJsonStr(new Zend_Date());
             }
         }catch(Exception $e){

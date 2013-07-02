@@ -6,19 +6,19 @@
  */
 
 /**
- * Description of OptionHelper_SearchEngine
+ * Description of OptionHelper_wpp_BRX_SearchEngine
  *
  * @author borismossounov
  */
-class OptionHelper_SearchEngine {
+class OptionHelper_wpp_BRX_SearchEngine {
 
     public static function getOption($option, $default='', $reload = false){
-        $key = 'SearchEngine.'.$option;
+        $key = 'wpp_BRX_SearchEngine.'.$option;
         return get_site_option($key, $default, !$reload);
     }
     
     public static function setOption($option, $value){
-        $key = 'SearchEngine.'.$option;
+        $key = 'wpp_BRX_SearchEngine.'.$option;
         return update_site_option($key, $value);
     }
     

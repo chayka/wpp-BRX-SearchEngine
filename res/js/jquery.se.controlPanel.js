@@ -248,13 +248,13 @@
             }
             var text = 'Выполнить операцию<br/>&quot;'+commandTitle+'&quot;<br/>для следующих типов записей?<br/><ul><li>'+typeTitles.join('</li><li>')+'</li></ul>';
             if('delete-index' == command){
-                window.modalConfirm(text, $.proxy(function(){
+                $.brx.modalConfirm(text, $.proxy(function(){
                     this.hideProgressBox();
                     this.deleteIndex(postTypes);
                 }, this), 'title');
                 
             }else{
-                window.modalConfirm(text, $.proxy(function(){
+                $.brx.modalConfirm(text, $.proxy(function(){
                     this.get('progressSpinner').show('Выполнение операции...');
                     this.showProgressBox(true);
 

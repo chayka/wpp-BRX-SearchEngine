@@ -16,4 +16,5 @@
         <div class="clearfloat"></div>
         
     </div>
+    <?php echo $this->debug?$this->partial('search/search-item-debug.phtml', array('post'=>$this->post)):'';?>
 </div>

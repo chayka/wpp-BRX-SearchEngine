@@ -6,13 +6,13 @@
  */
 
 /**
- * Description of UrlHelper_SearchEngine
+ * Description of UrlHelper_wpp_BRX_SearchEngine
  *
  * @author borismossounov
  */
-class UrlHelper_SearchEngine {
+class UrlHelper_wpp_BRX_SearchEngine {
     
-    public static function search($term, $postTypes=null, $page=1){
+    public static function search($term, $postTypes=null, $page=1, $debug = false){
         if(!$postTypes){
             $postTypes = 'all';
         }
@@ -26,6 +26,9 @@ class UrlHelper_SearchEngine {
             .'/?q='.urlencode($term);
         if($page!=1){
             $url.='&page='.$page;
+        }
+        if($debug){
+            $url.='&debug=1';
         }
         
         return $url;

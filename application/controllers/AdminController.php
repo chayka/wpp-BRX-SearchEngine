@@ -5,7 +5,7 @@
  *
  * @author borismossounov
  */
-class SearchEngine_AdminController  extends Zend_Controller_Action{
+class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
     public function init(){
 
     }
@@ -27,23 +27,23 @@ class SearchEngine_AdminController  extends Zend_Controller_Action{
         wp_enqueue_style('jquery-ui');
     }
 
-    public function setupSearchEngineAction(){
+    public function setupwpp_BRX_SearchEngineAction(){
         wp_enqueue_style('admin-setupForm');
         wp_enqueue_style('se-setup-form');
         wp_enqueue_script('jquery-brx-setupForm');
         
-        $this->view->items_per_iteration = $options['items_per_iteration'] = OptionHelper_SearchEngine::getOption('items_per_iteration', 10, true);
-        $this->view->items_per_page = $options['items_per_page'] = OptionHelper_SearchEngine::getOption('items_per_page', 10, true);
-        $this->view->vip_items_per_page = $options['vip_items_per_page'] = OptionHelper_SearchEngine::getOption('vip_items_per_page', 5, true);
-        $this->view->highlight = $options['highlight'] = OptionHelper_SearchEngine::getOption('highlight', 0, true);
-        $this->view->tamplate = $options['template'] = OptionHelper_SearchEngine::getOption('template', '', true);
-        $this->view->samples = $options['samples'] = OptionHelper_SearchEngine::getOption('samples', '', true);
-        $this->view->areas = $options['areas'] = OptionHelper_SearchEngine::getOption('areas', '', true);
+        $this->view->items_per_iteration = $options['items_per_iteration'] = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10, true);
+        $this->view->items_per_page = $options['items_per_page'] = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10, true);
+        $this->view->vip_items_per_page = $options['vip_items_per_page'] = OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 5, true);
+        $this->view->highlight = $options['highlight'] = OptionHelper_wpp_BRX_SearchEngine::getOption('highlight', 0, true);
+        $this->view->tamplate = $options['template'] = OptionHelper_wpp_BRX_SearchEngine::getOption('template', '', true);
+        $this->view->samples = $options['samples'] = OptionHelper_wpp_BRX_SearchEngine::getOption('samples', '', true);
+        $this->view->areas = $options['areas'] = OptionHelper_wpp_BRX_SearchEngine::getOption('areas', '', true);
 
         $this->view->options = $options;
     }
 
-    public function updateSearchEngineAction(){
+    public function updatewpp_BRX_SearchEngineAction(){
         Util::turnRendererOff();
 
         $itemsPerIteration = (int)InputHelper::getParam('items_per_iteration');
@@ -54,22 +54,22 @@ class SearchEngine_AdminController  extends Zend_Controller_Action{
         $samples = InputHelper::getParam('samples');
         $areas = InputHelper::getParam('areas');
 
-        OptionHelper_SearchEngine::setOption('items_per_iteration', $itemsPerIteration);
-        OptionHelper_SearchEngine::setOption('items_per_page', $itemsPerPage);
-        OptionHelper_SearchEngine::setOption('vip_items_per_page', $vipItemsPerPage);
-        OptionHelper_SearchEngine::setOption('highlight', $highlight);
-        OptionHelper_SearchEngine::setOption('template', $template);
-        OptionHelper_SearchEngine::setOption('samples', $samples);
-        OptionHelper_SearchEngine::setOption('areas', $areas);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('items_per_iteration', $itemsPerIteration);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('items_per_page', $itemsPerPage);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('vip_items_per_page', $vipItemsPerPage);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('highlight', $highlight);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('template', $template);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('samples', $samples);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('areas', $areas);
         
         JsonHelper::respond(array(
-            'items_per_iteration' => OptionHelper_SearchEngine::getOption('items_per_iteration', 10, true),
-            'items_per_page' => OptionHelper_SearchEngine::getOption('items_per_page', 10, true),
-            'vip_items_per_page' => OptionHelper_SearchEngine::getOption('vip_items_per_page', 5, true),
-            'highlight' => OptionHelper_SearchEngine::getOption('highlight', 0, true),
-            'template' => OptionHelper_SearchEngine::getOption('template', '', true),
-            'samples' => OptionHelper_SearchEngine::getOption('samples', '', true),
-            'areas' => OptionHelper_SearchEngine::getOption('areas', '', true),
+            'items_per_iteration' => OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10, true),
+            'items_per_page' => OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10, true),
+            'vip_items_per_page' => OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 5, true),
+            'highlight' => OptionHelper_wpp_BRX_SearchEngine::getOption('highlight', 0, true),
+            'template' => OptionHelper_wpp_BRX_SearchEngine::getOption('template', '', true),
+            'samples' => OptionHelper_wpp_BRX_SearchEngine::getOption('samples', '', true),
+            'areas' => OptionHelper_wpp_BRX_SearchEngine::getOption('areas', '', true),
         ));
     }
     
