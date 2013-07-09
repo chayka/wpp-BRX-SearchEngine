@@ -54,7 +54,7 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
         set_time_limit(0);
         global $wpdb;
         Util::turnRendererOff();
-        session_start();
+        Util::sessionStart();
         $postId = InputHelper::getParam('postId', 0);
         $number = InputHelper::getParam('number', 10);
         $postTypes = InputHelper::getParam('postType', '');

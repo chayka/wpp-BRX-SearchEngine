@@ -107,7 +107,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
     
     protected function saveHistory(){
         $query = InputHelper::getParam('q');
-        @session_start();
+        Util::sessionStart();
         $history = Util::getItem($_SESSION, 'search_history', array());
         if(array_search($query, $history)===false){
             $history = array_merge(array($query), $history);
