@@ -1,5 +1,6 @@
 <?php
 
+    LessCss::loadLessCss();
 
 ?>
 <div class="wrap">
@@ -7,33 +8,6 @@
         <br/>
     </div>
     <h2>Общие настройки Поисковой системы</h2>
-    <?php echo $this->render('indexer/control-panel.phtml')?>
-<?php
-//    echo "Initial ";
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "enable a ";
-//    SearchHelper::enableSearch('a');
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "enable b c ";
-//    SearchHelper::enableSearch(array('b','c'));
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "enable a ";
-//    SearchHelper::enableSearch('a');
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "enable b c ";
-//    SearchHelper::enableSearch(array('b','c'));
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "disable b ";
-//    SearchHelper::disableSearch('b');
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "disable a c ";
-//    SearchHelper::disableSearch(array('a','c'));
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "disable b ";
-//    SearchHelper::disableSearch('b');
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-//    echo "disable b c ";
-//    SearchHelper::disableSearch(array('b','c'));
-//    print_r(SearchHelper::getSearchEnabledPostTypes());
-?>
+    <?php // echo $this->render('indexer/control-panel.phtml')?>
+    <?php echo $this->render('widgets/brx.SearchEngine.ControlPanel.view.phtml')?>
 </div>

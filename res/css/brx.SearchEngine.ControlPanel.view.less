@@ -69,57 +69,32 @@
         }
     }
     
-    .processor{
+    .brx-job_control{
+        display: none;
         width: @width;
-/*        height: 200px;*/
-        border: 1px solid gray;
-        .box-sizing;
-        .border-radius(3px);
-        .progressbar{
-            margin: 2em 2em 1em;
-            height: 30px;
-            border: 1px solid gray;
-            .border-radius(3px);
-            .gradient-vertical(#eeeeee, #eeeeee, #ffffff);
-            .box-sizing;
-            
-            .progresslabel{
-                float: left;
-                width: 100%;
-                margin-top: 5px;
+        .processor .box_buttons{
+            .button_start{
+                display: none;
+            }
+
+        }
+    }
+    .box_optimize{
+        width: @width;
+        clear: both;
+        border-top: 1px dashed gray;
+        margin-top: 1em;
+        padding-top: 1em;
+        /*text-align: right;*/
+        .optimize_label{
+            line-height: 20px;
+            float: left;
+            .optimize_value{
                 font-weight: bold;
-                text-shadow: 1px 1px 0 #fff;            
-                text-align: center;
             }
         }
-        
-        .progressspinner{
-            margin: 0 2em 1em;
-            .brx_spinner{
-/*                font-weight: bold;*/
-                font-size: 12px;
-                line-height: 20px;
-                background-size: 16px;
-                padding: 0 0 0 24px;
-                min-height: 20px;
-            }
-        }
-        
-        .boxOutput{
-            margin: 0 2em 2em;
-            height: 100px;
-            overflow-y: scroll; 
-            border: 1px solid gray;
-            .box-sizing;
-            .border-radius(3px);
-/*            padding-top: 1ex;*/
-            .message{
-                padding: 0.5ex;
-                border-bottom: 1px dashed #eeeeee;
-            }
-            .message:last-child{
-                border-bottom: none;
-            }
+        button{
+            float: right;
         }
     }
 }

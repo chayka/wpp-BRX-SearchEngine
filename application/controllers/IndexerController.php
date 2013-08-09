@@ -126,17 +126,18 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
                 $payload['log'][] = sprintf("[%d:%s] %s",$post->getId(), $post->getType(), $post->getTitle());
                 $payload['posts_left']--;
             }
-            SearchHelper::commit();
-            SearchHelper::optimize();
+//            SearchHelper::commit();
+//            SearchHelper::optimize();
             $payload['posts_indexed']['total'] = SearchHelper::postsInIndex();
             if(!$payload['posts_left']){
                 unset($_SESSION['wpp_BRX_SearchEngine.indexStarted']);
                 $payload['stop'] = DateHelper::datetimeToJsonStr(new Zend_Date());
             }
         }catch(Exception $e){
-//            echo 'error: '. $e->getMessage();
             JsonHelper::respond(null, $e->getCode(), $e->getMessage());
         }
+        SearchHelper::commit();
+//        SearchHelper::optimize();
         foreach($postTypes as $postType){
             $payload['posts_indexed'][$postType] = SearchHelper::postsInIndex($postType);
         }
@@ -206,6 +207,13 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
             SearchHelper::disableSearch($postType);
         }
         JsonHelper::respond(SearchHelper::getSearchEnabledPostTypes());
+    }
+    
+    public function optimizeAction(){
+        SearchHelper::optimize();
+        $dbDate = OptionHelper_wpp_BRX_SearchEngine::getOption('lastOptimized');
+        $date = DateHelper::dbStrToDatetime($dbDate);
+        JsonHelper::respond(array('last_optimized'=>$date));
     }
 
 }

@@ -44,6 +44,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $debug = InputHelper::getParam('debug', 0);
         $posts = array();
         $terms = array();
+        $vipPosts = array();
         if($term){
             
             $itemsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10);
@@ -93,7 +94,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $this->view->debug = $debug;
         
         wp_enqueue_style('se-search-page');
-        wp_enqueue_style('pagination');
+//        wp_enqueue_style('pagination');
         wp_enqueue_script('se-search-form');
         if($debug){
             wp_enqueue_style('se-search-debug');

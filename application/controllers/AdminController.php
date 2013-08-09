@@ -7,7 +7,6 @@
  */
 class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
     public function init(){
-
     }
     
     public function indexAction(){
@@ -21,13 +20,15 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
 //            ), 'objects'));
         
         $this->view->postTypeInfo = SearchHelper::getPostTypeInfo();
+        $lastOptimized = OptionHelper_wpp_BRX_SearchEngine::getOption('lastOptimized');
+        $this->view->lastOptimized = DateHelper::dbStrToDatetime($lastOptimized);
         wp_enqueue_style('se-control-panel');
         wp_enqueue_script('se-control-panel');
 //        wp_enqueue_style('jquery-ui-smoothness');
         wp_enqueue_style('jquery-ui');
     }
 
-    public function setupwpp_BRX_SearchEngineAction(){
+    public function setupSearchEngineAction(){
         wp_enqueue_style('admin-setupForm');
         wp_enqueue_style('se-setup-form');
         wp_enqueue_script('jquery-brx-setupForm');
@@ -43,7 +44,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
         $this->view->options = $options;
     }
 
-    public function updatewpp_BRX_SearchEngineAction(){
+    public function updateSearchEngineAction(){
         Util::turnRendererOff();
 
         $itemsPerIteration = (int)InputHelper::getParam('items_per_iteration');
@@ -78,6 +79,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
         
         $zfPost = PostModel::unpackDbRecord($post);
         wp_enqueue_style('se-search-options');
+//        wp_enqueue_script('less');
 //        wp_enqueue_script('admin-editor');
         wp_nonce_field( plugin_basename( __FILE__ ), 'searchengine_options_box_content_nonce' );
         $meta = get_post_meta($post->ID, null, true);

@@ -9,20 +9,21 @@
             $samples = explode("\n", $samples);
             $sample = $samples[array_rand($samples)];
         ?>
-        <div class="row_sample" <?php if(!$sample):?>style="display: none;"<?php endif;?>>
+        <div class="row_sample" <?php HtmlHelper::hidden(!$sample);?>>
             <span class="sample_label">например:</span>
             <span class="sample_value" attachpoint="sampleView" attachevent="click: sampleClicked"><?php echo $sample;?></span>
         </div>
     </form>
     <?php
         $scopes = SearchHelper::getScopes();
+//        Util::print_r($scopes);
         $options = array();
         foreach ($scopes as $name=>$data){
             $options[$name]=$data['label'];
         }
         
     ?>
-    <div class="row_search_area" <?php if(count($options)<=1):?>style="display: none;"<?php endif;?> >
+    <div class="row_search_area" <?php HtmlHelper::hidden(count($options)<=1);?> >
         <label>Искать:</label>
         <span class="search_area_options" attachpoint="boxScopeOptions">
             <?php echo $this->formRadio('scope', $this->scope, array(
@@ -32,6 +33,11 @@
     </div>
     
 </div>
+<ul class="bem-search_areas">
+    <?php foreach ($scopes as $scope => $scopeData):?>
+    <li class="<?php if($scope == $this->scope){echo 'active';}?>"><a href="<?php echo UrlHelper_wpp_BRX_SearchEngine::search($this->term, $scope, 1, $this->debug);?>"><?php echo $scopeData['label']?></a></li>
+    <?php endforeach;?>
+</ul>
 
 <?php
 
@@ -65,15 +71,10 @@ if(count($this->posts)){?>
     <h2>Ничего не найдено по запросу <span class="term"><?php echo $this->term?></span> 
     </h2>
     <div>
-        Что еще можно сделать:
-        <ul>
-            <li>Попробуйте сформулировать запрос по-другому.</li>
-<!--            <li>Попробуйте поискать в других разделах.</li>-->
-<!--            <li>Попробуйте поискать в <a href="/tags/">рубриках</a>.</li>-->
-        </ul>
+        Попробуйте сформулировать запрос по-другому<?php if(SearchHelper::getScopes()):?> или изменить область поиска<?php endif;?>.
     </div>
 </div>
 <?php
 }
 
-ZF_Core::addJQueryWidgets();
+//ZF_Core::addJQueryWidgets();

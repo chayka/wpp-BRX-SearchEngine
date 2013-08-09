@@ -346,6 +346,8 @@ class SearchHelper {
     }
 
     public static function optimize(){
+        $date = new Zend_Date();
+        OptionHelper_wpp_BRX_SearchEngine::setOption('lastOptimized', DateHelper::datetimeToDbStr($date));
         return LuceneHelper::getInstance()->optimize();
     }
     

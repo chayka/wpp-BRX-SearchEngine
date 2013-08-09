@@ -25,7 +25,8 @@ ZF_Query::registerApplication('WPP_BRX_SEARCH_ENGINE', WPP_BRX_SEARCH_ENGINE_PAT
 
 class wpp_BRX_SearchEngine {
     const NLS_DOMAIN = "wpp_BRX_SearchEngine";
-    
+    protected static $needStyles = true;
+
     public static function baseUrl(){
         echo WPP_BRX_SEARCH_ENGINE_URL;
     }
@@ -55,40 +56,26 @@ class wpp_BRX_SearchEngine {
         return 20;
     }
     
+    public static function blockStyles($block = true){
+        self::$needStyles = !$block;
+    }
+
     public static function addJQueryWidgets(){
-        wp_enqueue_style('jquery-ui');
-        wp_enqueue_script('jquery');
-        wp_enqueue_script('jquery-effects-fade');
-        wp_enqueue_script('jquery-effects-drop');
-        wp_enqueue_script('jquery-effects-blind');
-        wp_enqueue_script('jquery-ui-widget');
-        wp_enqueue_script('jquery-ui-templated');
-        wp_enqueue_script('jquery-brx-modalBox');
-        wp_enqueue_style('jquery-brx-spinner');
-        wp_enqueue_script('jquery-brx-spinner');
-        wp_print_scripts();
-        
-        ?>
-                    
-        <div widget="generalSpinner"></div>
-        <div widget="modalBox"></div>    
-        <script>
-        jQuery(document).ready(function($) {
-            $.ui.parseWidgets('<?php echo WPP_BRX_SEARCH_ENGINE_URL?>js/');
-        });        
-        </script>
-                    
-        <?php
+        ZF_Core::addJQueryWidgets();
     }
     
     public static function registerResources($minimize = false){
-        wp_register_style('se-control-panel', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_control_panel.less');
         wp_register_style('se-search-options', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_search_options.less');
-        wp_register_script('se-control-panel', WPP_BRX_SEARCH_ENGINE_URL.'res/js/jquery.se.controlPanel.js', array('jquery-brx-form', 'jquery-ui-progressbar'));
+        wp_register_style('se-control-panel', WPP_BRX_SEARCH_ENGINE_URL.'res/css/brx.SearchEngine.ControlPanel.view.less');
+        wp_register_script('se-control-panel', WPP_BRX_SEARCH_ENGINE_URL.'res/js/brx.SearchEngine.ControlPanel.view.js', array('backbone-brx', 'jquery-ui-progressbar'));
+//        wp_register_script('se-control-panel', WPP_BRX_SEARCH_ENGINE_URL.'res/js/jquery.se.controlPanel.js', array('jquery-brx-form', 'jquery-ui-progressbar'));
         wp_register_style('se-setup-form', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_setup.less');
-        wp_register_style('se-search-page', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_search_page.less');
-        wp_register_style('se-search-debug', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_search_debug.less');
         wp_register_script('se-search-form', WPP_BRX_SEARCH_ENGINE_URL.'res/js/jquery.se.searchForm.js', array('jquery-ui-templated', 'jquery-brx-placeholder'));
+        if(self::$needStyles){
+//            die('#');
+            wp_register_style('se-search-page', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_search_page.less');
+        }
+        wp_register_style('se-search-debug', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-se_search_debug.less');
 //        wp_register_script('se-setup', WPP_BRX_SEARCH_ENGINE_URL.'res/js/jquery.se.setup.js', array('jquery-brx-form'));
 
 //        wp_register_style('cr-body', WPP_BRX_SEARCH_ENGINE_URL.'res/css/bem-body.less');

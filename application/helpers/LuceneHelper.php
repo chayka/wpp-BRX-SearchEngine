@@ -88,6 +88,10 @@ class LuceneHelper {
             }
         }
     }
+    
+    public static function getQuery(){
+        return self::$query;
+    }
 
     public static function parseQuery($query) {
         if (empty(self::$queries[$query])) {
@@ -495,6 +499,10 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
     
     public function normalize(Zend_Search_Lucene_Analysis_Token $srcToken) {
         $word = $srcToken->getTermText();
+//        if(LuceneHelper::getQuery()){
+//            return $srcToken;
+//        }
+//        Util::print_r(LuceneHelper::getQuery());
         $word = $this->normalizeWord($word);
         if(!$word){
             return null;
