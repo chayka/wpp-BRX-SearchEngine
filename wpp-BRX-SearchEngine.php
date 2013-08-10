@@ -149,7 +149,7 @@ class wpp_BRX_SearchEngine {
 
 
     public static function renderConsolePageIndexer(){
-       echo ZF_Query::processRequest('/admin/index/', 'WPP_BRX_SEARCH_ENGINE');	
+       echo ZF_Query::processRequest('/admin/index', 'WPP_BRX_SEARCH_ENGINE');	
     }
 
     public static function renderConsolePageSetup(){
