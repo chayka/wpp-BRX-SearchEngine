@@ -19,7 +19,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
 ////            '_builtin'=>false,
 //            ), 'objects'));
         
-//        $this->view->postTypeInfo = SearchHelper::getPostTypeInfo();
+        $this->view->postTypeInfo = SearchHelper::getPostTypeInfo();
 //        $lastOptimized = OptionHelper_wpp_BRX_SearchEngine::getOption('lastOptimized');
 //        $this->view->lastOptimized = DateHelper::dbStrToDatetime($lastOptimized);
         wp_enqueue_style('se-control-panel');
