@@ -9,7 +9,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
     public function init(){
     }
     
-    public function indexAction(){
+    public function indexerAction(){
         
 //        Util::print_r(get_taxonomies(array(
 ////            'object_type'=>array(
