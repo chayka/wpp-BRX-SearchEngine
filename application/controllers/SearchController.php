@@ -46,7 +46,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $terms = array();
         $vipPosts = array();
         if($term){
-            
+            SearchHelper::setLimit(100);
             $itemsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10);
             $_SESSION['search_scope'] = $scope;
             $title = 'Результаты поиска';
