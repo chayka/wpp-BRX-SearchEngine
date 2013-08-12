@@ -42,11 +42,12 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $scope = InputHelper::getParam('scope', 'all');
         $page = InputHelper::getParam('page', 1);
         $debug = InputHelper::getParam('debug', 0);
+        $limit = InputHelper::getParam('limit', 0);
         $posts = array();
         $terms = array();
         $vipPosts = array();
         if($term){
-//            SearchHelper::setLimit(100);
+            SearchHelper::setLimit($limit);
             $itemsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10);
             $_SESSION['search_scope'] = $scope;
             $title = 'Результаты поиска';
