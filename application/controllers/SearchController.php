@@ -42,7 +42,13 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $scope = InputHelper::getParam('scope', 'all');
         $page = InputHelper::getParam('page', 1);
         $debug = InputHelper::getParam('debug', 0);
-        $limit = InputHelper::getParam('limit', 0);
+        $limit = OptionHelper_wpp_BRX_SearchEngine::getOption('search_limit', 0);
+        $customLimit = InputHelper::getParam('limit', false);
+//        if($customLimit!==false){
+//            $limit = $customLimit;
+//        }
+        printf('Search limit: %d ', $limit);
+        
         $posts = array();
         $terms = array();
         $vipPosts = array();
