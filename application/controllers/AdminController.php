@@ -36,6 +36,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
         $this->view->items_per_iteration = $options['items_per_iteration'] = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10, true);
         $this->view->items_per_page = $options['items_per_page'] = OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10, true);
         $this->view->vip_items_per_page = $options['vip_items_per_page'] = OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 5, true);
+        $this->view->search_limit = $options['search_limit'] = OptionHelper_wpp_BRX_SearchEngine::getOption('search_limit', 0, true);
         $this->view->highlight = $options['highlight'] = OptionHelper_wpp_BRX_SearchEngine::getOption('highlight', 0, true);
         $this->view->tamplate = $options['template'] = OptionHelper_wpp_BRX_SearchEngine::getOption('template', '', true);
         $this->view->samples = $options['samples'] = OptionHelper_wpp_BRX_SearchEngine::getOption('samples', '', true);
@@ -50,6 +51,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
         $itemsPerIteration = (int)InputHelper::getParam('items_per_iteration');
         $itemsPerPage = (int)InputHelper::getParam('items_per_page');
         $vipItemsPerPage = (int)InputHelper::getParam('vip_items_per_page');
+        $searchLimit = (int)InputHelper::getParam('search_limit', 0);
         $highlight = InputHelper::getParam('highlight');
         $template = InputHelper::getParam('template');
         $samples = InputHelper::getParam('samples');
@@ -57,6 +59,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
 
         OptionHelper_wpp_BRX_SearchEngine::setOption('items_per_iteration', $itemsPerIteration);
         OptionHelper_wpp_BRX_SearchEngine::setOption('items_per_page', $itemsPerPage);
+        OptionHelper_wpp_BRX_SearchEngine::setOption('search_limit', $searchLimit);
         OptionHelper_wpp_BRX_SearchEngine::setOption('vip_items_per_page', $vipItemsPerPage);
         OptionHelper_wpp_BRX_SearchEngine::setOption('highlight', $highlight);
         OptionHelper_wpp_BRX_SearchEngine::setOption('template', $template);
@@ -66,6 +69,7 @@ class wpp_BRX_SearchEngine_AdminController  extends Zend_Controller_Action{
         JsonHelper::respond(array(
             'items_per_iteration' => OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10, true),
             'items_per_page' => OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_page', 10, true),
+            'search_limit' => OptionHelper_wpp_BRX_SearchEngine::getOption('search_limit', 0, true),
             'vip_items_per_page' => OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 5, true),
             'highlight' => OptionHelper_wpp_BRX_SearchEngine::getOption('highlight', 0, true),
             'template' => OptionHelper_wpp_BRX_SearchEngine::getOption('template', '', true),
