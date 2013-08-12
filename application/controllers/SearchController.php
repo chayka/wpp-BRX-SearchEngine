@@ -47,7 +47,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
 //        if($customLimit!==false){
 //            $limit = $customLimit;
 //        }
-        printf('Search limit: %d ', $limit);
+//        printf('Search limit: %d ', $limit);
         
         $posts = array();
         $terms = array();
