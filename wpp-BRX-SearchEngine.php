@@ -41,6 +41,7 @@ class wpp_BRX_SearchEngine {
         self::registerTaxonomies();
         self::registerActions();
         self::registerFilters();
+        self::registerSidebars();
         
     }
 
@@ -54,6 +55,17 @@ class wpp_BRX_SearchEngine {
 
     public static function excerptLength(){
         return 20;
+    }
+    
+    public static function registerSidebars(){
+        register_sidebar(array(
+            'name'=>'Поиск: Результаты поиска',
+            'id'=>'search-results'
+        ));
+        register_sidebar(array(
+            'name'=>'Поиск: Ничего не найдено',
+            'id'=>'search-not-found'
+        ));
     }
     
     public static function blockStyles($block = true){

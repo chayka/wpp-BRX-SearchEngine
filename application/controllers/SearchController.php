@@ -44,9 +44,9 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $debug = InputHelper::getParam('debug', 0);
         $limit = OptionHelper_wpp_BRX_SearchEngine::getOption('search_limit', 0);
         $customLimit = InputHelper::getParam('limit', false);
-//        if($customLimit!==false){
-//            $limit = $customLimit;
-//        }
+        if($customLimit!==false){
+            $limit = $customLimit;
+        }
 //        printf('Search limit: %d ', $limit);
         
         $posts = array();
@@ -99,6 +99,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $this->view->term = $term;
         $this->view->terms = $terms;
         $this->view->debug = $debug;
+        WpHelper::setSideBarId('search-results');
         
         wp_enqueue_style('se-search-page');
 //        wp_enqueue_style('pagination');
