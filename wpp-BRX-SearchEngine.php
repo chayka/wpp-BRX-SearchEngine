@@ -36,6 +36,7 @@ class wpp_BRX_SearchEngine {
     }
     
     public static function installPlugin() {
+        LessHelper::addImportDir(WPP_BRX_SEARCH_ENGINE_PATH.'res/css');
         self::registerResources();
         self::registerCustomPostTypes();
         self::registerTaxonomies();
