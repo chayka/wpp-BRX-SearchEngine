@@ -1,7 +1,8 @@
 <?php
 
 require_once 'Zend/Search/Lucene.php';
-require_once WPP_BRX_SEARCH_ENGINE_PATH.'library/phpmorphy-0.3.7/src/common.php';
+//Util::print_r(WPP_BRX_SEARCHENGINE_PATH);
+require_once WPP_BRX_SEARCHENGINE_PATH.'library/phpmorphy-0.3.7/src/common.php';
 interface LuceneReadyInterface {
 
     public function packLuceneDoc();
@@ -33,7 +34,7 @@ class LuceneHelper {
  */
 //            echo "getInstance()";
 //            $indexFnDir = PathHelper::getLuceneDir($_SERVER['SERVER_NAME']);
-            $indexFnDir = WPP_BRX_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName();
+            $indexFnDir = WPP_BRX_SEARCHENGINE_PATH . 'data/lucene/' . self::serverName();
 
 //            die($indexFnDir);
             try {
@@ -45,7 +46,7 @@ class LuceneHelper {
 //                $analyzer = new MorphyAnalyzer();
                 //инициализируем фильтр стоп-слов
 //                $stopWordsFilter = new Zend_Search_Lucene_Analysis_TokenFilter_StopWords();
-//                $stopWordsFilter->loadFromFile(WPP_BRX_SEARCH_ENGINE_PATH.'data/lucene/stop-words.txt');
+//                $stopWordsFilter->loadFromFile(WPP_BRX_SEARCHENGINE_PATH.'data/lucene/stop-words.txt');
 //                $analyzer->addFilter($stopWordsFilter);
                 //инициализируем морфологический фильтр
                 $analyzer->addFilter(new MorphyFilter());
@@ -64,7 +65,7 @@ class LuceneHelper {
     }
     
     public static function flush(){
-        return FileSystem::delete(WPP_BRX_SEARCH_ENGINE_PATH . 'data/lucene/' . self::serverName());
+        return FileSystem::delete(WPP_BRX_SEARCHENGINE_PATH . 'data/lucene/' . self::serverName());
     }
 
     public static function setIdField($value) {
@@ -345,7 +346,7 @@ class MorphyFilter extends Zend_Search_Lucene_Analysis_TokenFilter {
 
     public function __construct() {
         //инициализируем объект phpMorphy
-        $dir = WPP_BRX_SEARCH_ENGINE_PATH . 'library/phpmorphy-0.3.7/dicts';
+        $dir = WPP_BRX_SEARCHENGINE_PATH . 'library/phpmorphy-0.3.7/dicts';
         $lang = 'ru_RU';
 
         $this->morphy = new phpMorphy($dir, $lang);
