@@ -23,9 +23,12 @@ class wpp_BRX_SearchEngine extends WpPlugin{
     const NLS_DOMAIN = "wpp_BRX_SearchEngine";
     protected static $instance = null;
     
-    public static function initPlugin() {
+    public static function init() {
         
-        self::$instance = new wpp_BRX_SearchEngine(__FILE__, array('search', 'search-engine', 'indexer'));
+        self::$instance = $se = new wpp_BRX_SearchEngine(__FILE__, array('search', 'search-engine', 'indexer'));
+        $se->addSupport_ConsolePages();
+        $se->addSupport_Metaboxes();
+        $se->addSupport_PostProcessing();
     }
 
     public function registerCustomPostTypes() {
@@ -66,12 +69,13 @@ class wpp_BRX_SearchEngine extends WpPlugin{
     }
     
     public function registerActions(){
+        $this->addSupport_PostProcessing(100);
         $this->addAction('lucene_index_post', 'indexPost', 10, 2);
         $this->addAction('lucene_delete_post', 'deletePost', 10, 2);
-        $this->addAction('save_post', 'savePost', 90, 2);
+//        $this->addAction('save_post', 'savePost', 90, 2);
         $this->addAction('save_post', 'indexPost', 100, 2);
-        $this->addAction('delete_post', 'deletePost', 100, 2);
-        $this->addAction('trashed_post', 'deletePost', 100, 2);
+//        $this->addAction('delete_post', 'deletePost', 100, 2);
+//        $this->addAction('trashed_post', 'deletePost', 100, 2);
         
         $this->addAction('lucene_enable_indexer', 'enableIndexer', 10);
         $this->addAction('lucene_disable_indexer', 'disableIndexer', 10);
@@ -137,4 +141,4 @@ class wpp_BRX_SearchEngine extends WpPlugin{
 
 
 
-add_action('init', array('wpp_BRX_SearchEngine', 'initPlugin'));
+add_action('init', array('wpp_BRX_SearchEngine', 'init'));
