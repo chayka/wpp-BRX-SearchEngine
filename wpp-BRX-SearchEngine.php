@@ -31,6 +31,18 @@ class wpp_BRX_SearchEngine extends WpPlugin{
         $se->addSupport_PostProcessing();
     }
 
+    /**
+     * 
+     * @return wpp_BRX_SearchEngine
+     */
+    public static function getInstance() {
+        return self::$instance;
+    }
+
+    public static function baseUrl() {
+        echo self::getInstance()->getBaseUrl();
+    }
+
     public function registerCustomPostTypes() {
         
     }
