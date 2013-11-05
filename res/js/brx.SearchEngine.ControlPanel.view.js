@@ -1,5 +1,5 @@
-(function($){
-    $.declare( "brx.SearchEngine.ControlPanel", $.brx.FormView, {
+(function($, _, Backbone){
+    _.declare( "brx.SearchEngine.ControlPanel", $.brx.FormView, {
  
         // These options will be used as defaults
         options: { 
@@ -324,7 +324,7 @@
             var url = parseInt(this.getSwitch(postType).val())?'/api/indexer/enable-type':'/api/indexer/disable-type';
             $.ajax(url, {
                 data:{
-                    postType: postType,
+                    postType: postType
                 },
                 dataType: 'json',
                 type: 'post'
@@ -332,7 +332,7 @@
 
             .done($.proxy(function(data){
                 console.dir({'data': data});
-                if(0 == data.code){
+                if(0 === data.code){
                     for(var postType in this.get('postTypeInfo')){
                         this.options.postTypeInfo[postType].enabled = 
                             ($.inArray(postType, data.payload)>=0);
@@ -384,7 +384,7 @@
                 typeTitles.push(info[postType].label); 
             }
             var text = 'Выполнить операцию<br/>&quot;'+commandTitle+'&quot;<br/>для следующих типов записей?<br/><ul><li>'+typeTitles.join('</li><li>')+'</li></ul>';
-            if('delete-index' == command){
+            if('delete-index' === command){
                 $.brx.modalConfirm(text, $.proxy(function(){
                     this.hideProgressBox();
                     this.deleteIndex(postTypes);
@@ -439,10 +439,10 @@
 
             .done($.proxy(function(data){
                 console.dir({'data': data});
-                if(0 == data.code){
+                if(0 === data.code){
                     if(data.payload.start){
                         this.set('operation.start', data.payload.start);
-                        this.set('operation.total', data.payload.posts_found)
+                        this.set('operation.total', data.payload.posts_found);
                         this.addLogMessage('Operation started: '+data.payload.start);
                     }
                     if(!this.get('operation.total')){
@@ -520,7 +520,7 @@
 
             .done($.proxy(function(data){
                 console.dir({'data': data});
-                if(0 == data.code){
+                if(0 === data.code){
                     for(var postType in data.payload){
                         this.options.postTypeInfo[postType] = 
                             data.payload[postType];
@@ -580,10 +580,10 @@
                 this.hideSpinner();
             },this));
     
-        },
+        }
                 
         
     });
-}(jQuery));
+}(jQuery, _, Backbone));
 
 
