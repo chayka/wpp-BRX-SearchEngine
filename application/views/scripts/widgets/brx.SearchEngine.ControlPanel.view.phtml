@@ -51,7 +51,7 @@
         <span class="optimize_label">После индексации записей, индекс необходимо оптимизировать.<br/>Дата последней оптимизации индекса: 
             <span attachPoint="views.lastOptimized" class="optimize_value"><?php echo $this->lasOptimized;?></span>
         </span>
-        <button attachEvent="buttonOptimizeClicked" widget="button">Оптимизировать индекс</button>
+        <button attachEvent="buttonOptimizeClicked" class="button button-large button-primary">Оптимизировать индекс</button>
     </div>
     <?php WidgetHelper::renderJobControl(array('attachView'=>'jobControl', 'perIteration'=>$this->perIteration));?>
 <!--    <div class="processor" attachpoint="boxProgress" style="display: none;">
@@ -66,5 +66,6 @@
     <script type="text/javascript">
         window.postTypeInfo = <?php echo JsonHelper::encode($this->postTypeInfo)?>;
     </script>
+    <?php WidgetHelper::renderMultiSpinner();?>
     <?php ZF_Core::addJQueryWidgets();?>
 </div>

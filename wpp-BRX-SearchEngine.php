@@ -28,7 +28,7 @@ class wpp_BRX_SearchEngine extends WpPlugin{
         self::$instance = $se = new wpp_BRX_SearchEngine(__FILE__, array('search', 'search-engine', 'indexer'));
         $se->addSupport_ConsolePages();
         $se->addSupport_Metaboxes();
-        $se->addSupport_PostProcessing();
+        $se->addSupport_PostProcessing(200);
     }
 
     /**
@@ -84,8 +84,8 @@ class wpp_BRX_SearchEngine extends WpPlugin{
         $this->addSupport_PostProcessing(100);
         $this->addAction('lucene_index_post', 'indexPost', 10, 2);
         $this->addAction('lucene_delete_post', 'deletePost', 10, 2);
+//        $this->addAction('save_post', 'indexPost', 100, 2);
 //        $this->addAction('save_post', 'savePost', 90, 2);
-        $this->addAction('save_post', 'indexPost', 100, 2);
 //        $this->addAction('delete_post', 'deletePost', 100, 2);
 //        $this->addAction('trashed_post', 'deletePost', 100, 2);
         
@@ -112,15 +112,16 @@ class wpp_BRX_SearchEngine extends WpPlugin{
 
     public function registerMetaBoxes() {
         $this->addMetaBox(
-                'searchengine_options_box', 
+                'search_options', 
                 __( 'Поиск', self::NLS_DOMAIN ), 
-                '/admin/search-options', 
+                '/metabox/search-options', 
                 'advanced',
                 'high');
     }
     
     public function savePost($postId, $post){
-        $this->processRequest('/admin/update-post/post_id/'.$postId);
+        $this->indexPost($postId, $post);
+//        $this->processRequest('/admin/update-post/post_id/'.$postId);
     }
     
     public function indexPost($postId, $post){

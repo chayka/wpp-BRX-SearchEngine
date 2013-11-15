@@ -4,11 +4,12 @@
         <br/>
     </div>
     <h2>Настройка поисковой системы</h2>
-    <div class="bem-admin_setup_form bem-search_engine-admin_setup_form" widget="brx.setupForm" url="/api/search-engine/update-options" style="display: none;">
+    <!--<div class="bem-admin_setup_form bem-search_engine-admin_setup_form" widget="brx.setupForm" url="/api/search-engine/update-options" style="display: none;">-->
+    <div class="brx-options_form bem-search_engine-admin_setup_form" backbone-view="brx.OptionsForm" scope="site" prefix="wpp_BRX_SearchEngine" style="display: none;">
         <div class="form_fields">
-            <div class="form_field field_highlight" attachpoint="fields.highlight">
-                <label>Подсвечивать найденное:</label>
-                <span class="form_field-input_box"><?php echo $this->formSelect('highlight', $this->highlight, 
+            <div class="form_field stretch field_highlight" attachpoint="fields.highlight">
+                <label class="width40">Подсвечивать найденное:</label>
+                <span class="form_field-input_box"><?php echo $this->formSelect('highlight', /*$this->highlight*/ 0, 
                                 array(
                                     'attachpoint' => 'inputs.highlight',
 //                                    'attachevent' => 'change: itemTypeChanged'
@@ -19,49 +20,50 @@
                                 ));?></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_template" attachpoint="fields.template">
-                <label>Шаблон страницы поиска:</label>
-                <span class="form_field-input_box"><input name="template" type="text" value="<?php echo $this->escape($this->template); ?>"/></span>
+            <div class="form_field stretch field_template" attachpoint="fields.template">
+                <label class="width40">Шаблон страницы поиска:</label>
+                <span class="form_field-input_box"><input name="template" type="text" value="<?php //echo $this->escape($this->template); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_items_per_iteration" attachpoint="fields.items_per_iteration" >
-                <label>Индексировать за раз:</label>
-                <span class="form_field-input_box"><input name="items_per_iteration" type="text" value="<?php echo $this->escape($this->items_per_iteration); ?>"/></span>
+            <div class="form_field stretch field_items_per_iteration" attachpoint="fields.items_per_iteration" >
+                <label class="width40">Индексировать за раз:</label>
+                <span class="form_field-input_box"><input name="items_per_iteration" type="text" value="<?php // echo $this->escape($this->items_per_iteration); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_search_limit" attachpoint="fields.search_limit" >
-                <label>Лимит поиска:</label>
-                <span class="form_field-input_box"><input name="searh_limit" type="text" value="<?php echo $this->escape($this->search_limit); ?>"/></span>
+            <div class="form_field stretch field_search_limit" attachpoint="fields.search_limit" >
+                <label class="width40">Лимит поиска:</label>
+                <span class="form_field-input_box"><input name="searh_limit" type="text" value="<?php // echo $this->escape($this->search_limit); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_vip_items_per_page" attachpoint="fields.vip_items_per_page" >
-                <label>Рекламы на странице:</label>
-                <span class="form_field-input_box"><input name="vip_items_per_page" type="text" value="<?php echo $this->escape($this->vip_items_per_page); ?>"/></span>
+            <div class="form_field stretch field_vip_items_per_page" attachpoint="fields.vip_items_per_page" >
+                <label class="width40">Рекламы на странице:</label>
+                <span class="form_field-input_box"><input name="vip_items_per_page" type="text" value="<?php // echo $this->escape($this->vip_items_per_page); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_items_per_page" attachpoint="fields.items_per_page">
-                <label>Результатов на странице:</label>
-                <span class="form_field-input_box"><input name="items_per_page" type="text" value="<?php echo $this->escape($this->items_per_page); ?>"/></span>
+            <div class="form_field stretch field_items_per_page" attachpoint="fields.items_per_page">
+                <label class="width40">Результатов на странице:</label>
+                <span class="form_field-input_box"><input name="items_per_page" type="text" value="<?php // echo $this->escape($this->items_per_page); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_samples" attachpoint="fields.samples">
-                <label>Примеры для поиска:</label>
-                <span class="form_field-input_box"><textarea name="samples" ><?php echo $this->escape($this->samples); ?></textarea></span>
+            <div class="form_field fullsize field_samples" attachpoint="fields.samples">
+                <label class="">Примеры для поиска:</label>
+                <span class="form_field-input_box"><textarea name="samples" ><?php // echo $this->escape($this->samples); ?></textarea></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field field_areas" attachpoint="fields.areas">
-                <label>Области поиска:</label>
-                <span class="form_field-input_box"><textarea name="areas" ><?php echo $this->escape($this->areas); ?></textarea></span>
+            <div class="form_field fullsize field_areas" attachpoint="fields.areas">
+                <label class="">Области поиска:</label>
+                <span class="form_field-input_box"><textarea name="areas" ><?php // echo $this->escape($this->areas); ?></textarea></span>
                 <div class="form_field-tips">
                 </div>
             </div>
         </div>
         <div class="button_pane">
-            <button widget="button" attachevent="saveOptions">Сохранить</button>
+            <button class="button button-large button-primary" attachevent="saveOptions">Сохранить</button>
         </div>
     </div>
     <script type="text/javascript">
-        window.setupOptions = <?php echo JsonHelper::encode($this->options);?>;
+//        window.setupOptions = <?php // echo JsonHelper::encode($this->options);?>;
     </script>
+    <?php WidgetHelper::renderMultiSpinner();?>
     <?php ZF_Core::addJQueryWidgets();?>
 </div>

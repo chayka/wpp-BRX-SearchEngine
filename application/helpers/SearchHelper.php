@@ -298,7 +298,7 @@ class SearchHelper {
         if($post->getType()!='post'){
             $item = apply_filters(sprintf('lucene_ready_%s', $post->getType()), $item, $post->getWpPost());
         }
-        $vipKeywords = trim(get_post_meta($post->getId(), 'vip_keywords', true));
+        $vipKeywords = trim($post->getMeta('vip_keywords'));
         if($vipKeywords){
             $item['vip_keywords'] = array('unstored', $vipKeywords, 0.001);
             $item['vip_search_status'] = array('keyword', 'VS_YES');
