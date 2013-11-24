@@ -6,9 +6,6 @@ class wpp_BRX_SearchEngine_Bootstrap extends Zend_Application_Bootstrap_Bootstra
     
     public function run(){
         $this->setupRouting();
-        $front = Util::getFront();
-        WpHelper::getInstance();
-        parent::run();
     }
     
     public function setupRouting(){
