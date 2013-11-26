@@ -149,8 +149,50 @@ class SearchHelper {
     public static function setDefaultSearchField($field = null){
         LuceneHelper::getInstance()->setDefaultSearchField($field);
     }
+
+    public static function cmpTokens($a, $b){
+        $diff = $a->numDocs - $b->numDocs;
+        return $diff ? $diff : $a->position - $b->position;
+    }
     
-    public static function searchPosts($term, $scope, $page = 1, $itemsPerPage = 5, $searchField = null, $shuffle = false){
+    /**
+     * Reorders words in the query to search more unique words at first
+     * 
+     * @param type $query
+     * @return string Description
+     */
+    public static function reorederWordsInQuery($query, $searchField = null){
+        $tokens = LuceneHelper::tokenize($query);
+        $morphy = new MorphyFilter();
+        $lucene = LuceneHelper::getInstance();
+        $fieldNames = $searchField?
+            array($searchField):
+            array_diff($lucene->getFieldNames(true), array(
+                'PK',
+                'post_type',
+                'user_id',
+                'vip_search_status'
+            ));
+        foreach($tokens as $token){
+            $normalized = $morphy->normalizeWord($token->text);
+            $numDocs = 0;
+            foreach($fieldNames as $fieldName){
+                $term = new Zend_Search_Lucene_Index_Term($normalized, $fieldName);
+                $numDocs += $lucene->docFreq($term);
+            }
+            $token->numDocs = $numDocs;
+        }
+        
+        usort($tokens, array('SearchHelper', 'cmpTokens'));
+        $words = array();
+        foreach($tokens as $token){
+            $words[]=$token->text;
+        }
+        return implode(' ', $words);
+    }
+    
+    public static function searchPosts($searchQuery, $scope, $page = 1, $itemsPerPage = 5, $searchField = null, $shuffle = false){
+        $reorderedQuery = self::reorederWordsInQuery($searchQuery, $searchField);
         $postTypes = self::resolvePostTypes($scope);
         if($postTypes){
             if(!is_array($postTypes)){
@@ -168,8 +210,11 @@ class SearchHelper {
             $ptQuery[] = sprintf('(post_type: %s)', $postType);
         }
         $strQuery = sprintf('(%s) AND (%s)', 
-                join(' OR ', $ptQuery), $term
+                join(' OR ', $ptQuery), $reorderedQuery
             );
+        
+//        $strQuery = '('.$reorderedQuery.')';
+        
         if('vip_keywords' == $searchField){
             $strQuery .= ' AND (vip_search_status: VS_YES)';
         }
@@ -192,12 +237,11 @@ class SearchHelper {
 //        echo $strQuery;
         self::setDefaultSearchField($searchField);
         $lquery = LuceneHelper::parseQuery($strQuery);
-//        Util::print_r(array_values(LuceneHelper::getInstance()->getFieldNames()));
-//        Util::print_r($lquery);
+
         LuceneHelper::setQuery(
-            LuceneHelper::parseQuery($term)
-//                    $lquery                        
+            LuceneHelper::parseQuery($searchQuery)
         );
+        
         $hits = LuceneHelper::searchHits($lquery);
 //        Util::print_r($hits);
         self::setDefaultSearchField(null);
@@ -219,19 +263,16 @@ class SearchHelper {
             if($shuffle){
                 shuffle($ids);
             }
+            
             $ids = array_slice($ids, ($page - 1)*$itemsPerPage, $itemsPerPage);
-//            foreach($ids as $i=>$id){
-//                $ids[$i] = substr($id, 3);
-//            }
-            $query = array(
-                'post_type'=>$postTypes, 
-                'post__in'=>$ids,
-                'posts_per_page'=>$itemsPerPage,
-                'post_status' => 'any',
-                'orderby' => 'none'
-            );
-    //        WpHelper::setQuery($query);
-            $posts = PostModel::selectPosts($query);
+
+            $posts = PostModel::query()
+                    ->postType($postTypes)
+                    ->postIdIn($ids)
+                    ->postsPerPage($itemsPerPage)
+                    ->postStatus_Any()
+                    ->orderBy_None()
+                    ->select();
             $tmp = array();
             foreach($posts as $post){
                 $tmp[$post->getId()] = $post;
