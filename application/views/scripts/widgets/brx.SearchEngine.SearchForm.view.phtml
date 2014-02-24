@@ -1,0 +1,35 @@
+<div data-view="brx.SearchEngine.SearchForm" class="bem-search_form" >
+    <form data-attach-point="form" action="/search/<?php if($this->scope && $this->scope!='all'){echo $this->scope.'/';}?>">
+        <div class="row_query">
+            <input data-attach-point="inputQuery" name="q" value="<?php echo $this->escape($this->term);?>" class="search_query"/>
+            <button>найти</button>
+        </div>
+        <?php 
+            $samples = OptionHelper_wpp_BRX_SearchEngine::getOption('samples');
+            $samples = explode("\n", $samples);
+            $sample = $samples[array_rand($samples)];
+        ?>
+        <div class="row_sample" <?php HtmlHelper::hidden(!$sample);?>>
+            <span class="sample_label">например:</span>
+            <span class="sample_value" data-attach-point="sampleView" data-attach-event="click: sampleClicked"><?php echo $sample;?></span>
+        </div>
+    </form>
+    <?php
+        $scopes = SearchHelper::getScopes();
+//        Util::print_r($scopes);
+        $options = array();
+        foreach ($scopes as $name=>$data){
+            $options[$name]=$data['label'];
+        }
+        
+    ?>
+    <div class="row_search_area" <?php HtmlHelper::hidden(count($options)<=1);?> >
+        <label>Искать:</label>
+        <span class="search_area_options" data-attach-point="boxScopeOptions">
+            <?php echo $this->formRadio('scope', $this->scope, array(
+            'data-attach-event'=>'scopeChanged'
+            ), $options);?>
+        </span>
+    </div>
+    
+</div>

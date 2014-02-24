@@ -4,5 +4,5 @@
     <?php elseif ($this->bootstrapIcon) :?>
     <i class="<?php echo $this->bootstrapIcon;?>"></i>
     <?php endif;?>
-    <div class="title"><a href="<?php echo UrlHelper::post($this->post); ?>"><?php echo LuceneHelper::highlight($this->post->getTitle()); ?></a></div>
+    <div class="title"><a href="<?php echo UrlHelper::post($this->post); ?>"><?php echo   SearchHelper::highlight($this->post->getTitle()); ?></a></div>
 </div>

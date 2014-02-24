@@ -2,19 +2,19 @@
 //    LessCss::loadLessCss();
 ?>
 <div class="bem-search_engine-options">
-    <div class="form_field fullsize field_related_query" attachpoint="fields.relatedQuery">
+    <div class="form_field fullsize field_related_query" data-attach-point="fields.relatedQuery">
         <label>Ключевые слова для похожих материалов:</label>
         <span class="form_field-input_box"><input name="metabox_related_query" type="text" value="<?php echo $this->escape($this->relatedQuery); ?>"/></span>
         <div class="form_field-tips"></div>
     </div>
     
-    <div class="form_field fullsize field_vip_keywords" attachpoint="fields.vipKeywords">
+    <div class="form_field fullsize field_vip_keywords" data-attach-point="fields.vipKeywords">
         <label>Ключевые слова для привилегированного поиска:</label>
         <span class="form_field-input_box"><textarea name="metabox_vip_keywords"><?php echo $this->escape($this->vipKeywords); ?></textarea></span>
         <div class="form_field-tips"></div>
     </div>
     
-    <div class="form_field fullsize field_vip_excerpt" attachpoint="fields.vipExcerpt">
+    <div class="form_field fullsize field_vip_excerpt" data-attach-point="fields.vipExcerpt">
         <label>Текст объявления:</label>
         <span class="form_field-input_box"><textarea name="metabox_vip_excerpt"><?php echo $this->escape($this->vipExcerpt); ?></textarea></span>
         <div class="form_field-tips"></div>

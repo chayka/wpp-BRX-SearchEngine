@@ -51,8 +51,8 @@
         isOperationInProgress: function(){
             var operationInProgress = this.get('operation');
             operationInProgress = operationInProgress 
-                && $.brx.utils.getItem(operationInProgress, 'command')
-                && !$.brx.utils.getItem(operationInProgress, 'stop');
+                && _.getItem(operationInProgress, 'command')
+                && !_.getItem(operationInProgress, 'stop');
             return operationInProgress;
         },
         

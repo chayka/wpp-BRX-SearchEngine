@@ -4,15 +4,14 @@
         <br/>
     </div>
     <h2>Настройка поисковой системы</h2>
-    <!--<div class="bem-admin_setup_form bem-search_engine-admin_setup_form" widget="brx.setupForm" url="/api/search-engine/update-options" style="display: none;">-->
-    <div class="brx-options_form bem-search_engine-admin_setup_form" backbone-view="brx.OptionsForm" scope="site" prefix="wpp_BRX_SearchEngine" style="display: none;">
+    <div class="brx-options_form bem-search_engine-admin_setup_form" data-view="brx.OptionsForm" data-scope="site" data-prefix="wpp_BRX_SearchEngine" style="display: none;">
         <div class="form_fields">
-            <div class="form_field stretch field_highlight" attachpoint="fields.highlight">
-                <label class="width40">Подсвечивать найденное:</label>
-                <span class="form_field-input_box"><?php echo $this->formSelect('highlight', /*$this->highlight*/ 0, 
+            <div class="form_field stretch field_multi_index" data-attach-point="fields.multi_index">
+                <label class="width40">Мульти Индекс:</label>
+                <span class="form_field-input_box"><?php echo $this->formSelect('multi_index', /*$this->highlight*/ 0, 
                                 array(
-                                    'attachpoint' => 'inputs.highlight',
-//                                    'attachevent' => 'change: itemTypeChanged'
+                                    'data-attach-point' => 'inputs.multi_idex',
+//                                    'data-attach-event' => 'change: itemTypeChanged'
                                 ), 
                                 array(
                                     0 =>'Выкл',
@@ -20,37 +19,50 @@
                                 ));?></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field stretch field_template" attachpoint="fields.template">
+            <div class="form_field stretch field_highlight" data-attach-point="fields.highlight">
+                <label class="width40">Подсвечивать найденное:</label>
+                <span class="form_field-input_box"><?php echo $this->formSelect('highlight', /*$this->highlight*/ 0, 
+                                array(
+                                    'data-attach-point' => 'inputs.highlight',
+//                                    'data-attach-event' => 'change: itemTypeChanged'
+                                ), 
+                                array(
+                                    0 =>'Выкл',
+                                    1 =>'Вкл'
+                                ));?></span>
+                <div class="form_field-tips"></div>
+            </div>
+            <div class="form_field stretch field_template" data-attach-point="fields.template">
                 <label class="width40">Шаблон страницы поиска:</label>
                 <span class="form_field-input_box"><input name="template" type="text" value="<?php //echo $this->escape($this->template); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field stretch field_items_per_iteration" attachpoint="fields.items_per_iteration" >
+            <div class="form_field stretch field_items_per_iteration" data-attach-point="fields.items_per_iteration" >
                 <label class="width40">Индексировать за раз:</label>
                 <span class="form_field-input_box"><input name="items_per_iteration" type="text" value="<?php // echo $this->escape($this->items_per_iteration); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field stretch field_search_limit" attachpoint="fields.search_limit" >
+            <div class="form_field stretch field_search_limit" data-attach-point="fields.search_limit" >
                 <label class="width40">Лимит поиска:</label>
                 <span class="form_field-input_box"><input name="searh_limit" type="text" value="<?php // echo $this->escape($this->search_limit); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field stretch field_vip_items_per_page" attachpoint="fields.vip_items_per_page" >
+            <div class="form_field stretch field_vip_items_per_page" data-attach-point="fields.vip_items_per_page" >
                 <label class="width40">Рекламы на странице:</label>
                 <span class="form_field-input_box"><input name="vip_items_per_page" type="text" value="<?php // echo $this->escape($this->vip_items_per_page); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field stretch field_items_per_page" attachpoint="fields.items_per_page">
+            <div class="form_field stretch field_items_per_page" data-attach-point="fields.items_per_page">
                 <label class="width40">Результатов на странице:</label>
                 <span class="form_field-input_box"><input name="items_per_page" type="text" value="<?php // echo $this->escape($this->items_per_page); ?>"/></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field fullsize field_samples" attachpoint="fields.samples">
+            <div class="form_field fullsize field_samples" data-attach-point="fields.samples">
                 <label class="">Примеры для поиска:</label>
                 <span class="form_field-input_box"><textarea name="samples" ><?php // echo $this->escape($this->samples); ?></textarea></span>
                 <div class="form_field-tips"></div>
             </div>
-            <div class="form_field fullsize field_areas" attachpoint="fields.areas">
+            <div class="form_field fullsize field_areas" data-attach-point="fields.areas">
                 <label class="">Области поиска:</label>
                 <span class="form_field-input_box"><textarea name="areas" ><?php // echo $this->escape($this->areas); ?></textarea></span>
                 <div class="form_field-tips">
@@ -58,12 +70,12 @@
             </div>
         </div>
         <div class="button_pane">
-            <button class="button button-large button-primary" attachevent="saveOptions">Сохранить</button>
+            <button class="button button-large button-primary" data-attach-event="saveOptions">Сохранить</button>
         </div>
     </div>
     <script type="text/javascript">
 //        window.setupOptions = <?php // echo JsonHelper::encode($this->options);?>;
     </script>
-    <?php WidgetHelper::renderMultiSpinner();?>
-    <?php ZF_Core::addJQueryWidgets();?>
+    <?php // WidgetHelper::renderMultiSpinner();?>
+    <?php // ZF_Core::addJQueryWidgets();?>
 </div>

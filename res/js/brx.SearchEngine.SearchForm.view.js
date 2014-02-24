@@ -1,8 +1,6 @@
-(function( $ ) {
-//    $.widgetTemplated( "brx.spinner", $.ui.templated, {
-    $.widget( "se.searchForm", $.ui.templated, {
+(function( $, _ ) {
+    _.declare( "brx.SearchEngine.SearchForm", $.brx.View, {
  
-//        _parentPrototype: $.ui.templated.prototype,
         
         // These options will be used as defaults
         options: { 
@@ -25,4 +23,4 @@
             this.get('form').attr('action', '/search/'+scope);
         }
     });
-}(jQuery))
+}(jQuery, _))

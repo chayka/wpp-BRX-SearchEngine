@@ -1,20 +1,26 @@
 <?php
 
-class wpp_BRX_SearchEngine_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
+class wpp_BRX_SearchEngine_Bootstrap extends WpPluginBootstrap// Zend_Application_Bootstrap_Bootstrap
 {
     const MODULE = 'wpp_BRX_SearchEngine';
     
     public function run(){
-        $this->setupRouting();
+        parent::run();
     }
     
+    public function getModuleName() {
+        return self::MODULE;
+    }
+    
+    
     public function setupRouting(){
-        $front = Util::getFront();
-        $router = $front->getRouter();
-        $cd = $front->getControllerDirectory();
-        $front->addControllerDirectory($cd['default'], self::MODULE);        
-
-        $router->addRoute(self::MODULE, new Zend_Controller_Router_Route(':controller/:action/*', array('controller' => 'index', 'action'=>'index', 'module'=>self::MODULE)));
+        $router = parent::setupRouting();
+//        $front = Util::getFront();
+//        $router = $front->getRouter();
+//        $cd = $front->getControllerDirectory();
+//        $front->addControllerDirectory($cd['default'], self::MODULE);        
+//
+//        $router->addRoute(self::MODULE, new Zend_Controller_Router_Route(':controller/:action/*', array('controller' => 'index', 'action'=>'index', 'module'=>self::MODULE)));
         $router->addRoute('search', new Zend_Controller_Router_Route('search/:scope/*', array('controller' => 'search', 'action'=>'search', 'module'=>self::MODULE, 'scope'=>'all')));
         $router->addRoute('update-options', new Zend_Controller_Router_Route('search-engine/update-options/*', array('controller' => 'admin', 'action'=>'update-search-engine', 'module'=>self::MODULE)));
         $router->addRoute('index-post', new Zend_Controller_Router_Route('indexer/index-post/:postId/*', array('controller' => 'indexer', 'action'=>'index-post', 'module'=>self::MODULE, 'postId'=>0), array('postId'=>'\d+')));

@@ -1,7 +1,8 @@
-<div widget="se.searchForm" class="bem-search_form" >
-    <form attachpoint="form" action="/search/<?php if($this->scope && $this->scope!='all'){echo $this->scope.'/';}?>">
+<?php echo $this->render('widgets/brx.SearchEngine.SearchForm.view.phtml');?>
+<!--div widget="se.searchForm" class="bem-search_form" >
+    <form data-attach-point="form" action="/search/<?php if($this->scope && $this->scope!='all'){echo $this->scope.'/';}?>">
         <div class="row_query">
-            <input attachpoint="inputQuery" name="q" value="<?php echo $this->escape($this->term);?>" class="search_query ui-widget"/>
+            <input data-attach-point="inputQuery" name="q" value="<?php echo $this->escape($this->term);?>" class="search_query ui-widget"/>
             <button widget="button">найти</button>
         </div>
         <?php 
@@ -11,7 +12,7 @@
         ?>
         <div class="row_sample" <?php HtmlHelper::hidden(!$sample);?>>
             <span class="sample_label">например:</span>
-            <span class="sample_value" attachpoint="sampleView" attachevent="click: sampleClicked"><?php echo $sample;?></span>
+            <span class="sample_value" data-attach-point="sampleView" data-attach-event="click: sampleClicked"><?php echo $sample;?></span>
         </div>
     </form>
     <?php
@@ -25,14 +26,14 @@
     ?>
     <div class="row_search_area" <?php HtmlHelper::hidden(count($options)<=1);?> >
         <label>Искать:</label>
-        <span class="search_area_options" attachpoint="boxScopeOptions">
+        <span class="search_area_options" data-attach-point="boxScopeOptions">
             <?php echo $this->formRadio('scope', $this->scope, array(
-            'attachevent'=>'scopeChanged'
+            'data-attach-event'=>'scopeChanged'
             ), $options);?>
         </span>
     </div>
     
-</div>
+</div-->
 <ul class="bem-search_areas">
     <?php foreach ($scopes as $scope => $scopeData):?>
     <li class="<?php if($scope == $this->scope){echo 'active';}?>"><a href="<?php echo UrlHelper_wpp_BRX_SearchEngine::search($this->term, $scope, 1, $this->debug);?>"><?php echo $scopeData['label']?></a></li>
@@ -77,4 +78,4 @@ if(count($this->posts)){?>
 <?php
 }
 
-//ZF_Core::addJQueryWidgets();
+////ZF_Core::addJQueryWidgets();

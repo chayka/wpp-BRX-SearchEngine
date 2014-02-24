@@ -223,31 +223,6 @@
         },
         
         
-//        setupUploadForm: function(){
-//            this.get('fileUploadBox').iframePostForm({
-//                iframeID : 'iframe-post-form',
-//                json: 'true',
-//                post: $.proxy(function(form){
-//                    if(this.checkUploadForm()){
-//                        console.dir({this:this});
-//                        this.showSpinner('Загрузка файла...');
-//                        this.get('inputs.count').val(this.get('jobControl').getPerIteration());
-//                        this.get('jobControl')
-//                                .setProgress(-1, 0)
-//                                .started();
-//                        this.get('jobControl').clearLog();
-//                        this.get('jobControl').$el.show('fade', 300);
-//                        this.set('uploadState', 'running');
-//                        return true;
-//                        
-//                    }
-//                    return false;
-//                }, this),
-//                complete: $.proxy(this.onIterationCompleted, this)
-//            });
-//            
-//        },
-//        
         doNextIteration: function(job){
             job = job || this.get('job');
             if(!job){
@@ -257,32 +232,46 @@
             this.get('jobControl')
                     .setProgress(job.processed, job.total)
                     .started();
-            $.ajax('/api/catalog/upload/', {
+            
+            this.ajax('/api/catalog/upload/', {
                 data:{
                     job_id: job.id,
                     count: this.get('jobControl').getPerIteration() || 10
                 },
-                dataType: 'json',
-                type: 'post'
-            })
-
-            .done($.proxy(this.onIterationCompleted, this))
-
-            .fail($.proxy(function(response){
-                var message = $.brx.utils.processFail(response) 
-                    || 'Ошибка обновления данных';
-                this.setMessage(message, true);
-                this.hideSpinner();
-                this.showMessage();
-                this.get('jobControl').paused();
-            },this))
-
-            .always($.proxy(function(){
-            },this));
+                spinner: false,
+                errorMessage: 'Ошибка обновления данных',
+                success: $.proxy(this.onIterationCompleted, this),
+                error: $.proxy(function(response){
+                    this.get('jobControl').paused();
+                },this)
+            });
+            
+//            $.ajax('/api/catalog/upload/', {
+//                data:{
+//                    job_id: job.id,
+//                    count: this.get('jobControl').getPerIteration() || 10
+//                },
+//                dataType: 'json',
+//                type: 'post'
+//            })
+//
+//            .done($.proxy(this.onIterationCompleted, this))
+//
+//            .fail($.proxy(function(response){
+//                var message = $.brx.utils.processFail(response) 
+//                    || 'Ошибка обновления данных';
+//                this.setMessage(message, true);
+//                this.hideSpinner();
+//                this.showMessage();
+//                this.get('jobControl').paused();
+//            },this))
+//
+//            .always($.proxy(function(){
+//            },this));
         },
         
         onIterationCompleted: function (data, status){
-            this.hideSpinner();
+//            this.hideSpinner();
             console.dir({'uploadFile.success':{args: arguments}});
             if(data && 0 === data.code){
                 var job = data.payload.job;
@@ -296,7 +285,7 @@
                 ||  this.get('uploadState')==='stopped'){
                     this.render();
                     this.setMessage('Загружено записей: '+job.processed);
-                    this.showMessage();
+//                    this.showMessage();
                     this.set('job', null);
                     this.get('jobControl').stopped();
                     this.set('uploadState', 'stopped');
@@ -312,50 +301,72 @@
 
             }else{
                 this.get('jobControl').paused();
-                this.handleAjaxErrors(data);
-                this.showMessage();
+//                this.handleAjaxErrors(data);
+//                this.showMessage();
             }
         },
                 
         searchEnabledChanged: function(postType){
             console.log('search for '+postType+' is now '+(parseInt(this.getSwitch(postType).val())?'enabled':'disabled'));
                         this.clearMessage();
-            this.showSpinner('Обновление данных...');
             var url = parseInt(this.getSwitch(postType).val())?'/api/indexer/enable-type':'/api/indexer/disable-type';
-            $.ajax(url, {
+            
+            this.ajax(url, {
                 data:{
                     postType: postType
                 },
-                dataType: 'json',
-                type: 'post'
-            })
-
-            .done($.proxy(function(data){
-                console.dir({'data': data});
-                if(0 === data.code){
-                    for(var postType in this.get('postTypeInfo')){
-                        this.options.postTypeInfo[postType].enabled = 
-                            ($.inArray(postType, data.payload)>=0);
+                spinnerMessage: 'Обновление данных...',
+                errorMessage: 'Ошибка обновления данных',
+                success: $.proxy(function(data){
+                    console.dir({'data': data});
+                    if(0 === data.code){
+                        for(var postType in this.get('postTypeInfo')){
+                            this.options.postTypeInfo[postType].enabled = 
+                                ($.inArray(postType, data.payload)>=0);
+                        }
+                        this.render();
+//                        this.clearMessage();
+                    }else{
+//                          this.handleAjaxErrors(data);
                     }
-                    this.render();
-                    this.clearMessage();
-                }else{
-//                        this.processErrors(data.message);
-                      this.handleAjaxErrors(data);
-                }
-            },this))
-
-            .fail($.proxy(function(response){
-                var message = $.brx.utils.processFail(response) 
-                    || 'Ошибка обновления данных';
-                this.setMessage(message, true);
-            },this))
-
-            .always($.proxy(function(){
-               this.hideSpinner();
-               this.showMessage();
-//                    this.enableInputs();
-            },this));
+                },this)
+            });
+            
+//            this.showSpinner('Обновление данных...');
+//            $.ajax(url, {
+//                data:{
+//                    postType: postType
+//                },
+//                dataType: 'json',
+//                type: 'post'
+//            })
+//
+//            .done($.proxy(function(data){
+//                console.dir({'data': data});
+//                if(0 === data.code){
+//                    for(var postType in this.get('postTypeInfo')){
+//                        this.options.postTypeInfo[postType].enabled = 
+//                            ($.inArray(postType, data.payload)>=0);
+//                    }
+//                    this.render();
+//                    this.clearMessage();
+//                }else{
+////                        this.processErrors(data.message);
+//                      this.handleAjaxErrors(data);
+//                }
+//            },this))
+//
+//            .fail($.proxy(function(response){
+//                var message = $.brx.utils.processFail(response) 
+//                    || 'Ошибка обновления данных';
+//                this.setMessage(message, true);
+//            },this))
+//
+//            .always($.proxy(function(){
+//               this.hideSpinner();
+//               this.showMessage();
+////                    this.enableInputs();
+//            },this));
         },
         
         confirmCommand: function(command, postTypes){
@@ -385,18 +396,20 @@
             }
             var text = 'Выполнить операцию<br/>&quot;'+commandTitle+'&quot;<br/>для следующих типов записей?<br/><ul><li>'+typeTitles.join('</li><li>')+'</li></ul>';
             if('delete-index' === command){
-                $.brx.modalConfirm(text, $.proxy(function(){
+//                $.brx.modalConfirm(text, $.proxy(function(){
+                $.brx.Modals.confirm(text, $.proxy(function(){
                     this.hideProgressBox();
                     this.deleteIndex(postTypes);
-                }, this), 'title');
+                }, this), commandTitle);
                 
             }else{
-                $.brx.modalConfirm(text, $.proxy(function(){
+//                $.brx.modalConfirm(text, $.proxy(function(){
+                $.brx.Modals.confirm(text, $.proxy(function(){
 //                    this.get('progressSpinner').show('Выполнение операции...');
                     this.showProgressBox(true);
                     this.get('jobControl').started();
                     this.processCommand(command, postTypes);
-                }, this), 'title');
+                }, this), commandTitle);
             }
         },
         
@@ -431,154 +444,235 @@
                     data.update = 1;
                     break;
             }
-            $.ajax(url, {
-                data:data,
-                dataType: 'json',
-                type: 'post'
-            })
-
-            .done($.proxy(function(data){
-                console.dir({'data': data});
-                if(0 === data.code){
-                    if(data.payload.start){
-                        this.set('operation.start', data.payload.start);
-                        this.set('operation.total', data.payload.posts_found);
-                        this.addLogMessage('Operation started: '+data.payload.start);
+            
+            this.ajax(url, {
+                data: data,
+                spinner: false,
+                errorMessage: 'Ошибка выполнения операции',
+                success: $.proxy(function(data){
+                    console.dir({'data': data});
+                    if(0 === data.code){
+                        if(data.payload.start){
+                            this.set('operation.start', data.payload.start);
+                            this.set('operation.total', data.payload.posts_found);
+                            this.addLogMessage('Operation started: '+data.payload.start);
+                        }
+                        if(!this.get('operation.total')){
+                            this.set('operation.total', data.payload.posts_found);
+                        }
+                        for(var i in this.get('operation.postTypes')){
+                            var postType = this.get('operation').postTypes[i];
+                            this.options.postTypeInfo[postType].indexed 
+                                = data.payload.posts_indexed[postType];
+                        }
+                        for( var i in data.payload.log){
+                            var message=data.payload.log[i];
+                            this.addLogMessage(message);
+                        }
+                        var total = this.get('operation.total');
+                        this.setProgress(total - data.payload.posts_left, total);
+                        if(data.payload.stop){
+                            this.set('operation.stop', data.payload.stop);
+                            this.addLogMessage('Operation finished: '+data.payload.stop);
+                            this.get('jobControl').stopped();
+                        }else if(this.get('progressState')==='stopped'){
+                            this.addLogMessage('Operation stopped');
+                            this.set('operation', {});
+                            this.get('jobControl').stopped();
+                        }else if(this.get('progressState')==='paused'){
+                            this.addLogMessage('Operation paused');
+                            this.get('jobControl').paused();
+                        }else if(this.get('progressState')==='running'){
+                            this.processCommand();
+                        }
+                        this.render();
+                        this.clearMessage();
+                    }else{
+//                          this.handleAjaxErrors(data);
                     }
-                    if(!this.get('operation.total')){
-                        this.set('operation.total', data.payload.posts_found);
-                    }
-                    for(var i in this.get('operation.postTypes')){
-                        var postType = this.get('operation').postTypes[i];
-                        this.options.postTypeInfo[postType].indexed 
-                            = data.payload.posts_indexed[postType];
-                    }
-                    for( var i in data.payload.log){
-                        var message=data.payload.log[i];
-                        this.addLogMessage(message);
-                    }
-                    var total = this.get('operation.total');
-                    this.setProgress(total - data.payload.posts_left, total);
-                    if(data.payload.stop){
-                        this.set('operation.stop', data.payload.stop);
-//                        this.set('operation', {});
-                        this.addLogMessage('Operation finished: '+data.payload.stop);
-                        this.get('jobControl').stopped();
-//                        this.get('progressSpinner').hide();
-                    }else if(this.get('progressState')==='stopped'){
-                        this.addLogMessage('Operation stopped');
-                        this.set('operation', {});
-                        this.get('jobControl').stopped();
-                    }else if(this.get('progressState')==='paused'){
-                        this.addLogMessage('Operation paused');
-                        this.get('jobControl').paused();
-                    }else if(this.get('progressState')==='running'){
-                        this.processCommand();
-                    }
-                    this.render();
-                    this.clearMessage();
-                }else{
-                      this.handleAjaxErrors(data);
-                }
-            },this))
-
-            .fail($.proxy(function(response){
-//                var number = this.get('operation.number');
-//                number = Math.floor(number * 0.6);
-//                if(number){
-//                    this.processCommand(null, null, number);
-//                }else{
+                },this),
+                error: $.proxy(function(response){
                     this.get('jobControl').paused();
-//                    this.get('progressSpinner').hide();
-                    var message = $.brx.utils.processFail(response) 
-                        || 'Ошибка выполнения операции';
-                    this.setMessage(message, true);
-                    this.showMessage();
-                    
+                },this)
+            });
+            
+//            $.ajax(url, {
+//                data:data,
+//                dataType: 'json',
+//                type: 'post'
+//            })
+//
+//            .done($.proxy(function(data){
+//                console.dir({'data': data});
+//                if(0 === data.code){
+//                    if(data.payload.start){
+//                        this.set('operation.start', data.payload.start);
+//                        this.set('operation.total', data.payload.posts_found);
+//                        this.addLogMessage('Operation started: '+data.payload.start);
+//                    }
+//                    if(!this.get('operation.total')){
+//                        this.set('operation.total', data.payload.posts_found);
+//                    }
+//                    for(var i in this.get('operation.postTypes')){
+//                        var postType = this.get('operation').postTypes[i];
+//                        this.options.postTypeInfo[postType].indexed 
+//                            = data.payload.posts_indexed[postType];
+//                    }
+//                    for( var i in data.payload.log){
+//                        var message=data.payload.log[i];
+//                        this.addLogMessage(message);
+//                    }
+//                    var total = this.get('operation.total');
+//                    this.setProgress(total - data.payload.posts_left, total);
+//                    if(data.payload.stop){
+//                        this.set('operation.stop', data.payload.stop);
+//                        this.addLogMessage('Operation finished: '+data.payload.stop);
+//                        this.get('jobControl').stopped();
+//                    }else if(this.get('progressState')==='stopped'){
+//                        this.addLogMessage('Operation stopped');
+//                        this.set('operation', {});
+//                        this.get('jobControl').stopped();
+//                    }else if(this.get('progressState')==='paused'){
+//                        this.addLogMessage('Operation paused');
+//                        this.get('jobControl').paused();
+//                    }else if(this.get('progressState')==='running'){
+//                        this.processCommand();
+//                    }
+//                    this.render();
+//                    this.clearMessage();
+//                }else{
+//                      this.handleAjaxErrors(data);
 //                }
-                console.error(response);
-            },this))
-
-            .always($.proxy(function(){
-//               this.hideSpinner();
-//               this.showMessage();
-//                    this.enableInputs();
-            },this));
+//            },this))
+//
+//            .fail($.proxy(function(response){
+//                this.get('jobControl').paused();
+//                var message = $.brx.utils.processFail(response) 
+//                    || 'Ошибка выполнения операции';
+//                this.setMessage(message, true);
+//                this.showMessage();
+//                console.error(response);
+//            },this))
+//
+//            .always($.proxy(function(){
+//            },this));
         },
         
         deleteIndex: function(postTypes){
             console.log('deleting index for '+postTypes.join(', '));
-                        this.clearMessage();
-            this.showSpinner('Очистка индекса...');
-            $.ajax('/api/indexer/delete-posts', {
+            
+            this.ajax('/api/indexer/delete-posts', {
                 data:{
                     postType: postTypes?postTypes.join(','):''
                 },
-                dataType: 'json',
-                type: 'post'
-            })
-
-            .done($.proxy(function(data){
-                console.dir({'data': data});
-                if(0 === data.code){
-                    for(var postType in data.payload){
-                        this.options.postTypeInfo[postType] = 
-                            data.payload[postType];
+                spinnerMessage: 'Очистка индекса...',
+                errorMessage: 'Ошибка очистки индекса',
+                success: $.proxy(function(data){
+                    console.dir({'data': data});
+                    if(0 === data.code){
+                        for(var postType in data.payload){
+                            this.options.postTypeInfo[postType] = 
+                                data.payload[postType];
+                        }
+                        this.render();
+//                        this.clearMessage();
+                    }else{
+    //                        this.processErrors(data.message);
+//                          this.handleAjaxErrors(data);
                     }
-                    this.render();
-                    this.clearMessage();
-                }else{
-//                        this.processErrors(data.message);
-                      this.handleAjaxErrors(data);
-                }
-            },this))
-
-            .fail($.proxy(function(response){
-                var message = $.brx.utils.processFail(response) 
-                    || 'Ошибка очистки индекса';
-                this.setMessage(message, true);
-            },this))
-
-            .always($.proxy(function(){
-               this.hideSpinner();
-               this.showMessage();
-//                    this.enableInputs();
-            },this));
+                },this)
+            });
+            
+//            this.clearMessage();
+//            this.showSpinner('Очистка индекса...');
+//            $.ajax('/api/indexer/delete-posts', {
+//                data:{
+//                    postType: postTypes?postTypes.join(','):''
+//                },
+//                dataType: 'json',
+//                type: 'post'
+//            })
+//
+//            .done($.proxy(function(data){
+//                console.dir({'data': data});
+//                if(0 === data.code){
+//                    for(var postType in data.payload){
+//                        this.options.postTypeInfo[postType] = 
+//                            data.payload[postType];
+//                    }
+//                    this.render();
+//                    this.clearMessage();
+//                }else{
+////                        this.processErrors(data.message);
+//                      this.handleAjaxErrors(data);
+//                }
+//            },this))
+//
+//            .fail($.proxy(function(response){
+//                var message = $.brx.utils.processFail(response) 
+//                    || 'Ошибка очистки индекса';
+//                this.setMessage(message, true);
+//            },this))
+//
+//            .always($.proxy(function(){
+//               this.hideSpinner();
+//               this.showMessage();
+////                    this.enableInputs();
+//            },this));
         },
                 
         buttonOptimizeClicked: function(){
-            this.showSpinner('Оптимизация индекса');
-            $.ajax('/api/indexer/optimize/', {
-                dataType: 'json',
-                type: 'post'
-            })
+            
+            this.ajax('/api/indexer/optimize/', {
+                spinnerMessage: 'Оптимизация индекса',
+                errorMessage: 'Ошибка оптимизации индекса',
+                success: $.proxy(function(data){
+                    if(0 === data.code){
+                        var message = 'Оптимизация индекса записией проведена';
+                        var date = new Date(data.payload.last_optimized);
+                        this.set('lastOptimized', date);
+                        this.get('views.lastOptimized').text(date.toLocaleString());
+                        this.setMessage(message);
+                    }else{
+    //                    this.handleAjaxErrors(data);
+    //                    this.showMessage();
+                    }
 
-            .done($.proxy(function(data){
-                if(0 === data.code){
-                    var message = 'Оптимизация индекса записией проведена';
-                    var date = new Date(data.payload.last_optimized);
-                    this.set('lastOptimized', date);
-                    this.get('views.lastOptimized').text(date.toLocaleString());
-                    this.setMessage(message);
-                    this.showMessage();
-                }else{
-                    this.handleAjaxErrors(data);
-                    this.showMessage();
-                }
-        
-            }, this))
-
-            .fail($.proxy(function(response){
-                var message = $.brx.utils.processFail(response) 
-                    || 'Ошибка оптимизации индекса';
-                this.setMessage(message, true);
-                this.showMessage();
-//                this.get('jobControl').paused();
-            },this))
-
-            .always($.proxy(function(){
-                this.hideSpinner();
-            },this));
+                }, this)
+            });
+            
+//            this.showSpinner('Оптимизация индекса');
+//            $.ajax('/api/indexer/optimize/', {
+//                dataType: 'json',
+//                type: 'post'
+//            })
+//
+//            .done($.proxy(function(data){
+//                if(0 === data.code){
+//                    var message = 'Оптимизация индекса записией проведена';
+//                    var date = new Date(data.payload.last_optimized);
+//                    this.set('lastOptimized', date);
+//                    this.get('views.lastOptimized').text(date.toLocaleString());
+//                    this.setMessage(message);
+//                    this.showMessage();
+//                }else{
+//                    this.handleAjaxErrors(data);
+//                    this.showMessage();
+//                }
+//        
+//            }, this))
+//
+//            .fail($.proxy(function(response){
+//                var message = $.brx.utils.processFail(response) 
+//                    || 'Ошибка оптимизации индекса';
+//                this.setMessage(message, true);
+//                this.showMessage();
+////                this.get('jobControl').paused();
+//            },this))
+//
+//            .always($.proxy(function(){
+//                this.hideSpinner();
+//            },this));
     
         }
                 

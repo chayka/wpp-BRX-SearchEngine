@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 ?>
-<div class="bem-search_engine-admin" backbone-view="brx.SearchEngine.ControlPanel" itemsPerIteration="<?php echo OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10);?>" lastOptimized="<?php echo $this->lastOptimized?DateHelper::datetimeToJsonStr($this->lastOptimized):'';?>" <?php HtmlHelper::hidden();?>>
+<div class="bem-search_engine-admin" data-view="brx.SearchEngine.ControlPanel" data-itemsPerIteration="<?php echo OptionHelper_wpp_BRX_SearchEngine::getOption('items_per_iteration', 10);?>" data-lastOptimized="<?php echo $this->lastOptimized?DateHelper::datetimeToJsonStr($this->lastOptimized):'';?>" <?php HtmlHelper::hidden();?>>
     <table class="control_panel" cellspacing="0" rules="">
         <tr>
             <td>Тип записи</td>
@@ -19,53 +19,44 @@
             <td class="title"><?php printf('%s (%s)', $postType['label'], $name);?></td>
             <td class="switch"><?php echo $this->formSelect('searchEnabled.'.$name, $postType['enabled']?'1':'0', 
                     array(
-                        'attachpoint'=>'searchEnabled.'.$name, 
-//                        'attachevent'=>'change: filterChanged'
+                        'data-attach-point'=>'searchEnabled.'.$name, 
+//                        'data-attach-event'=>'change: filterChanged'
                         ), 
                     array(
                         '1' => 'Вкл.',
                         '0' => 'Выкл.',
                     ));?></td>
-            <td class="total" attachpoint="cellTotal.<?php echo $name;?>"><?php echo $postType['total'];?></td>
-            <td class="indexed" attachpoint="cellIndexed.<?php echo $name;?>"><?php echo $postType['indexed'];?></td>
+            <td class="total" data-attach-point="cellTotal.<?php echo $name;?>"><?php echo $postType['total'];?></td>
+            <td class="indexed" data-attach-point="cellIndexed.<?php echo $name;?>"><?php echo $postType['indexed'];?></td>
             <td class="actions">
-                <span attachpoint="linkCreateIndex.<?php echo $name;?>">Полная индексация</span>
-                <span attachpoint="linkUpdateIndex.<?php echo $name;?>">Обновить индекс</span>
-                <span attachpoint="linkDeleteIndex.<?php echo $name;?>">Удалить индекс</span>
+                <span data-attach-point="linkCreateIndex.<?php echo $name;?>">Полная индексация</span>
+                <span data-attach-point="linkUpdateIndex.<?php echo $name;?>">Обновить индекс</span>
+                <span data-attach-point="linkDeleteIndex.<?php echo $name;?>">Удалить индекс</span>
             </td>
         </tr>
     <?php endforeach;?>
         <tr class="selected">
             <td class="title">Выбранные типы</td>
             <td class="switch"></td>
-            <td class="total" attachpoint="cellTotal.selected">0</td>
-            <td class="indexed" attachpoint="cellIndexed.selected">0</td>
+            <td class="total" data-attach-point="cellTotal.selected">0</td>
+            <td class="indexed" data-attach-point="cellIndexed.selected">0</td>
             <td class="actions">
-                <span attachpoint="linkCreateIndex.selected">Полная индексация</span>
-                <span attachpoint="linkUpdateIndex.selected">Обновить индекс</span>
-                <span attachpoint="linkDeleteIndex.selected">Удалить индекс</span>
+                <span data-attach-point="linkCreateIndex.selected">Полная индексация</span>
+                <span data-attach-point="linkUpdateIndex.selected">Обновить индекс</span>
+                <span data-attach-point="linkDeleteIndex.selected">Удалить индекс</span>
             </td>
         </tr>
     </table>
     <div class="box_optimize">
         <span class="optimize_label">После индексации записей, индекс необходимо оптимизировать.<br/>Дата последней оптимизации индекса: 
-            <span attachPoint="views.lastOptimized" class="optimize_value"><?php echo $this->lasOptimized;?></span>
+            <span data-attach-point="views.lastOptimized" class="optimize_value"><?php echo $this->lasOptimized;?></span>
         </span>
-        <button attachEvent="buttonOptimizeClicked" class="button button-large button-primary">Оптимизировать индекс</button>
+        <button data-attach-event="buttonOptimizeClicked" class="button button-large button-primary">Оптимизировать индекс</button>
     </div>
     <?php WidgetHelper::renderJobControl(array('attachView'=>'jobControl', 'perIteration'=>$this->perIteration));?>
-<!--    <div class="processor" attachpoint="boxProgress" style="display: none;">
-        <div class="progressbar" widget="progressbar" attachwidget="progressbar">
-            <div class="progresslabel" attachpoint="progresslabel">100%</div>
-        </div>
-        <div class="progressspinner" widget="brx.spinner" attachwidget="progressSpinner"></div>
-        <div class="boxOutput" attachpoint="boxOutput">
-            
-        </div>
-    </div>-->
     <script type="text/javascript">
         window.postTypeInfo = <?php echo JsonHelper::encode($this->postTypeInfo)?>;
     </script>
-    <?php WidgetHelper::renderMultiSpinner();?>
-    <?php ZF_Core::addJQueryWidgets();?>
+    <?php // WidgetHelper::renderMultiSpinner();?>
+    <?php // ZF_Core::addJQueryWidgets();?>
 </div>

@@ -72,7 +72,7 @@ class wpp_BRX_SearchEngine extends WpPlugin{
         $this->registerStyle('se-control-panel', 'brx.SearchEngine.ControlPanel.view.less');
         $this->registerScript('se-control-panel', 'brx.SearchEngine.ControlPanel.view.js', array('backbone-brx', 'jquery-ui-progressbar'));
         $this->registerStyle('se-setup-form', 'bem-se_setup.less');
-        $this->registerScript('se-search-form', 'jquery.se.searchForm.js', array('jquery-ui-templated', 'jquery-brx-placeholder'));
+        $this->registerScript('se-search-form', 'jbrx.SearchEngine.SearchForm.view.js', array('backbone-brx', 'jquery-brx-placeholder'));
         if(self::$instance->needStyles){
             $this->registerStyle('se-search-page', 'bem-se_search_page.less');
         }
@@ -128,7 +128,7 @@ class wpp_BRX_SearchEngine extends WpPlugin{
         $this->processRequest('/indexer/index-post/'.$postId);
     }
 
-    public function deletePost($postId, $post = null){
+    public function deletePost($postId){
         $this->processRequest('/indexer/delete-post/'.$postId);
     }
     
