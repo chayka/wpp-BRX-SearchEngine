@@ -64,7 +64,8 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
                 $title = sprintf('&quot;%s&quot; %s', $term, $scopeLabel);
                 
             }
-            WpHelper::setPostTitle($title);
+            ZF_Query::setPostTitle($title);
+            HtmlHelper::setHeadTitle($title);
             
             $vipsPerPage = OptionHelper_wpp_BRX_SearchEngine::getOption('vip_items_per_page', 3);
             
@@ -99,7 +100,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         $this->view->term = $term;
         $this->view->terms = $terms;
         $this->view->debug = $debug;
-        WpHelper::setSideBarId('search-results');
+        HtmlHelper::setSidebarId('search-results');
         
         wp_enqueue_style('se-search-page');
 //        wp_enqueue_style('pagination');
@@ -109,7 +110,7 @@ class wpp_BRX_SearchEngine_SearchController extends Zend_Controller_Action{
         }
         $template = OptionHelper_wpp_BRX_SearchEngine::getOption('template');
         if($template){
-            WpHelper::setPageTemplate($template);
+            ZF_Query::setPageTemplate($template);
         }
         
     }

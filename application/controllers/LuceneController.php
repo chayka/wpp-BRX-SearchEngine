@@ -267,7 +267,7 @@ class LuceneController extends Zend_Controller_Action{
             'post_type' => 'any',
             'posts_per_page'=>$itemsPerPage,
         );
-//        WpHelper::setQuery($query);
+
         $posts = AG_PostModel::selectPosts($query);
 //        print_r($posts);
         foreach($posts as $post){
