@@ -346,7 +346,6 @@ class SearchHelper {
         }else{
 //            $item['vip_search_status'] = array('keyword', 'VS_NO');
         }
-//        Log::dir($item, 'before indexing');
         return $item;
     }
 

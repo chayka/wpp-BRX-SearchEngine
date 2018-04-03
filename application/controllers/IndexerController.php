@@ -23,7 +23,6 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
         if(wp_is_post_autosave($post) || wp_is_post_revision($post)){
             return;
         }
-        Log::func();
         if($post->post_status == 'publish' 
                 && SearchHelper::isSearchEnabled($post->post_type)){
             SearchHelper::indexPost($post);
@@ -167,7 +166,6 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
                         LEFT JOIN $wpdb->posts AS p ON(pm.post_id = p.ID)
                         WHERE pm.meta_key = %s AND p.post_type = %s
                         ", SearchHelper::META_FIELD_INDEXED, $postType);
-//                    Log:: dir($sql, 'deleting meta');
                     $wpdb->query($sql);
                 }
             }else{
@@ -177,7 +175,6 @@ class wpp_BRX_SearchEngine_IndexerController extends Zend_Controller_Action
                     FROM $wpdb->postmeta AS pm
                     WHERE pm.meta_key = %s
                     ", SearchHelper::META_FIELD_INDEXED);
-//                Log:: dir($sql, 'deleting meta');
                     $wpdb->query($sql);
             }
             JsonHelper::respond(SearchHelper::getPostTypeInfo($postTypes));
